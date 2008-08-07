@@ -10,7 +10,7 @@
 # or implied. Use at your own risk or not at all.
 #
 
-__revision__ = "$Id: test.py,v 1.16 2004/08/13 22:24:18 akuchling Exp $"
+__revision__ = "$Id$"
 
 import binascii
 import string
@@ -223,7 +223,8 @@ def TestStreamModules(args=['arc4', 'XOR'], verbose=1):
                         die('XOR failed on entry '+`entry`)
 
 
-def TestBlockModules(args=['aes', 'arc2', 'des', 'blowfish', 'cast', 'des3'],
+def TestBlockModules(args=['aes', 'arc2', 'des', 'blowfish', 'cast', 'des3',
+                           'idea', 'rc5'],
                      verbose=1):
     import string
     args=map(string.lower, args)
