@@ -1,2 +1,4 @@
-- posibility to get history between two revision
-- posibility to show remote server address
+- get history between two revision
+- show remote server address
+- add branch/tag fetching
+- method to make all the localrepos up-to-date with the remote repos
