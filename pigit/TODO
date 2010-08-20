@@ -2,3 +2,5 @@
 - show remote server address
 - add branch/tag fetching
 - method to make all the localrepos up-to-date with the remote repos
+- don't allow to initialize folder that is not a git repository
+- add static function to check if folder is a git repository, and is properly initialized
