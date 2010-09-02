@@ -17,21 +17,73 @@ class Pigit(object):
     Main core class used to end communication with user
     """
 
-    def __init__(self, repo_path, cache_time=900):
-        git_path = os.path.join(repo_path, '.git')
-        conf = Configuration()
-        conf.git_path = git_path
-        conf.gitcache = GitCache(cache_time)
-        self.gitcache = conf.gitcache
+    def __init__(self, repo_path):
 
-        pack_files = glob.glob(os.path.join(git_path, 'objects', 'pack', 'pack-*.idx'))
+        self.repo_path = repo_path
+        conf = Configuration()
+        conf.git_path = os.path.join(repo_path, '.git')
+        
+        pack_files = glob.glob(os.path.join(conf.git_path, 'objects', 'pack', 'pack-*.idx'))
         if(pack_files):
             conf.packs = [pack.Pack(pack.Index(re.search('-(?P<packhash>[a-f0-9]{40})\.idx', x).group('packhash'))) for x in pack_files]
 
-        self.repo_path = repo_path
         self.ref = Ref()
         self.object = Object()
         self.parser = Parser()
+
+    def log(self, hash=None, limit=0, src=None, dst=None):
+        if(hash is None):
+            if(src is None):
+                hash = self.ref.read_hash()
+            else:
+                hash = src
+        else:
+            hash = hash
+
+        if(src and dst):
+            limit = self.__commit_distance(self.parse(src, 'commit'), self.parse(dst, 'commit'))
+            print limit
+            if(limit == 0):
+                return []
+            if(limit < 0):
+                hash = dst
+                limit = limit * -1
+                
+        commit = self.parse(hash, 'commit')
+        hashes = []
+        loop = (limit == 0)
+        while (loop or limit > 0):
+            parent = commit.parent()
+            if not parent:
+                break
+            hashes.append(self.diff_trees(commit.tree, commit.parent().tree))
+            commit = parent
+            limit = limit - 1
+            
+        return hashes
+
+    def diff_trees(self, src_tree, dst_tree):
+        src_tree_fields = dict((x['filename'], dict(hash=x['hash'], type=x['type'])) for x in src_tree.fields) 
+        dst_tree_fields = dict((x['filename'], dict(hash=x['hash'], type=x['type'])) for x in dst_tree.fields)
+        all_tree_fields = src_tree_fields
+        all_tree_fields.update(dict([(item,dst_tree_fields[item]) for item in dst_tree_fields.keys() if not src_tree_fields.has_key(item)]))
+
+        results = []
+
+        for item in all_tree_fields:
+            if(not src_tree_fields.has_key(item) or not dst_tree_fields.has_key(item)):
+                results.append(item)
+                continue
+            
+            if(src_tree_fields[item]['hash'] != dst_tree_fields[item]['hash']):
+                if(all_tree_fields[item]['type'] == 'tree'):
+                    res = self.diff_trees(self.parse(src_tree_fields[item]['hash'], 'tree'), self.parse(dst_tree_fields[item]['hash'], 'tree'))
+                    for file in res:
+                        results.append(item + os.sep + file)
+                else:
+                    results.append(item)
+
+        return results
 
     def commit(self, hash=None):
         """Returns commit object (HEAD commit if hash is no provided)"""
@@ -91,9 +143,6 @@ class Pigit(object):
         Returns :limit commits for each of files matching :path,
         starting from :commit, where given file changed.
         """
-        item = self.gitcache.read(path, 'history' + str(limit))
-        if(item):
-            return item
 
         # First we need to check path, find wildcards and parse them properly
         # including hidden files
@@ -115,7 +164,6 @@ class Pigit(object):
         else:
             result = self.history_file(path, limit, commit)
 
-        self.gitcache.store(path, result, 'history' + str(limit))
         return result
 
     def history_tree(self, path, files, limit=0, commit=None):
@@ -346,3 +394,29 @@ class Pigit(object):
                 if(item['hash'] == hash):
                     return self.parse(item['hash'])
         return None
+
+    def __commit_distance(self, src, dst):
+        commit = self.commit()
+        parent = commit.parent()
+        distance = 0
+        multipier = 0
+        while(parent):
+            parent = commit.parent()
+            if(multipier != 0):
+                distance = distance + 1
+                
+            if(commit.hash == src.hash):
+                if(multipier != 0):
+                    break
+                else:
+                    multipier = 1
+                
+            if(commit.hash == dst.hash):
+                if(multipier != 0):
+                    break
+                else:
+                    multipier = -1
+            commit = parent
+                    
+        distance = distance * multipier
+        return distance
