@@ -20,7 +20,6 @@ class Parser(object):
     def __init__(self):
         conf = Configuration()
         self.git_path = conf.git_path
-        self.gitcache = conf.gitcache
 
     def hash_to_path(self, hash):
         """Returns full path to object file identified by given hash"""
@@ -70,11 +69,8 @@ class Parser(object):
         """
         Used to fetch any data associated with given hash in git file system.
         Method itself determines is it in pack file or in object file, and if
-        finds anything, returns corresponding object. Supports GitCache.
+        finds anything, returns corresponding object. 
         """
-        item = self.gitcache.read(hash)
-        if(item):
-            return item
 
         raw = self.read(hash)
         if(type is not None and type != raw.type):
@@ -92,7 +88,6 @@ class Parser(object):
         else:
             raise Exception('Unknown object found! This should not happen')
 
-        self.gitcache.store(hash, gitobject)
         return gitobject
 
     def parse_commit(self, raw):
