@@ -5,10 +5,14 @@ from datetime import datetime
 from pigit.common import Timezone
 from math import ceil
 import binascii
+import ConfigParser
+from io import StringIO
+
 
 from pigit.common import Configuration
 from pigit.common import GitCache
 from pigit.gitobjects import *
+
 
 class Parser(object):
     """
@@ -270,3 +274,45 @@ class Index(Parser):
             entries.append(entry)
             start = end
         return entries
+
+class Config(Parser):
+
+    def __init__(self, git_path):
+        self.git_path = git_path
+        self.config = ConfigParser.ConfigParser()
+        stringio = StringIO(open(os.path.join(self.git_path, 'config')).read().replace("\t", ''))
+        self.config.readfp(stringio)
+    
+    def __get_options(self, section):
+        options = dict()
+        for option in self.config.options(section):
+            options[option] = self.config.get(section, option)
+        return options
+        
+    
+    @property
+    def core(self):
+        return self.__get_options('core')
+        
+    @property
+    def branches(self):
+        options = dict()
+        for section in self.config.sections():
+            if re.match('branch', section):
+                options[section] = self.__get_options(section)
+        return options
+    
+    def branch(self, name):
+        return self.__get_options('branch "' + name + '"')
+    
+    @property
+    def remotes(self):
+        options = dict()
+        for section in self.config.sections():
+            if re.match('remote', section):
+                options[section] = self.__get_options(section)
+        return options
+    
+    def remote(self, name):
+        return self.__get_options('remote "' + name + '"')
+    
