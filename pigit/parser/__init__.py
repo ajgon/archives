@@ -77,6 +77,10 @@ class Parser(object):
         """
 
         raw = self.read(hash)
+        
+        if not raw:
+            raise Exception('Invalid hash')
+        
         if(type is not None and type != raw.type):
             raise Exception('Invalid type - "' + type +
                             '" was expected, but "' + raw.type + '" found.')
