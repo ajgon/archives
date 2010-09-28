@@ -33,10 +33,19 @@ class Pigit(object):
         self.ref = Ref()
         self.object = Object()
         self.parser = Parser()
-        
-    @staticmethod
-    def is_repo(repo_path):
-        return os.path.exists(os.path.join(repo_path, '.git'))
+        self.active_reference = self.ref.head_hash('master')
+
+    def checkout(self, hash=None):
+        if hash is None:
+            return self.parse(self.active_reference)
+        else:
+            if(re.match('[0-9a-f]{40}', hash)):
+                result = self.parse(hash)
+                self.active_reference = hash
+            else:
+                result = self.parse(self.ref.head_hash(hash))
+                self.active_reference = self.ref.head_hash(hash)
+            return result
 
     def log(self, hash=None, limit=0, src=None, dst=None):
         if(hash is None):
@@ -63,34 +72,15 @@ class Pigit(object):
             parent = commit.parent()
             if not parent:
                 break
-            hashes.append(self.diff_trees(commit.tree, commit.parent().tree))
+            hashes.append(self.__diff_trees(commit.tree, commit.parent().tree))
             commit = parent
             limit = limit - 1
             
         return hashes
-
-    def diff_trees(self, src_tree, dst_tree):
-        src_tree_fields = dict((x['filename'], dict(hash=x['hash'], type=x['type'])) for x in src_tree.fields) 
-        dst_tree_fields = dict((x['filename'], dict(hash=x['hash'], type=x['type'])) for x in dst_tree.fields)
-        all_tree_fields = src_tree_fields
-        all_tree_fields.update(dict([(item,dst_tree_fields[item]) for item in dst_tree_fields.keys() if not src_tree_fields.has_key(item)]))
-
-        results = []
-
-        for item in all_tree_fields:
-            if(not src_tree_fields.has_key(item) or not dst_tree_fields.has_key(item)):
-                results.append(item)
-                continue
-            
-            if(src_tree_fields[item]['hash'] != dst_tree_fields[item]['hash']):
-                if(all_tree_fields[item]['type'] == 'tree'):
-                    res = self.diff_trees(self.parse(src_tree_fields[item]['hash'], 'tree'), self.parse(dst_tree_fields[item]['hash'], 'tree'))
-                    for file in res:
-                        results.append(item + os.sep + file)
-                else:
-                    results.append(item)
-
-        return results
+        
+    @staticmethod
+    def is_repo(repo_path):
+        return os.path.exists(os.path.join(repo_path, '.git'))
 
     def commit(self, hash=None):
         """Returns commit object (HEAD commit if hash is no provided)"""
@@ -134,6 +124,31 @@ class Pigit(object):
         """Returns object associated with given hash"""
         return self.parser.parse(hash, type)
 
+
+
+    def __diff_trees(self, src_tree, dst_tree):
+        src_tree_fields = dict((x['filename'], dict(hash=x['hash'], type=x['type'])) for x in src_tree.fields) 
+        dst_tree_fields = dict((x['filename'], dict(hash=x['hash'], type=x['type'])) for x in dst_tree.fields)
+        all_tree_fields = src_tree_fields
+        all_tree_fields.update(dict([(item,dst_tree_fields[item]) for item in dst_tree_fields.keys() if not src_tree_fields.has_key(item)]))
+
+        results = []
+
+        for item in all_tree_fields:
+            if(not src_tree_fields.has_key(item) or not dst_tree_fields.has_key(item)):
+                results.append(item)
+                continue
+            
+            if(src_tree_fields[item]['hash'] != dst_tree_fields[item]['hash']):
+                if(all_tree_fields[item]['type'] == 'tree'):
+                    res = self.__diff_trees(self.parse(src_tree_fields[item]['hash'], 'tree'), self.parse(dst_tree_fields[item]['hash'], 'tree'))
+                    for file in res:
+                        results.append(item + os.sep + file)
+                else:
+                    results.append(item)
+
+        return results
+    
     def __commit_distance(self, src, dst):
         commit = self.commit()
         parent = commit.parent()
