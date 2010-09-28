@@ -23,7 +23,7 @@ class Pigit(object):
         conf = Configuration()
         conf.git_path = os.path.join(repo_path, '.git')
         
-        if(not Pigit.isrepo(repo_path)):
+        if not Pigit.is_repo(repo_path):
             raise IOError('Provided directory is not a git repository: \'' + repo_path + '\'')
         
         pack_files = glob.glob(os.path.join(conf.git_path, 'objects', 'pack', 'pack-*.idx'))
@@ -35,7 +35,7 @@ class Pigit(object):
         self.parser = Parser()
         
     @staticmethod
-    def isrepo(repo_path):
+    def is_repo(repo_path):
         return os.path.exists(os.path.join(repo_path, '.git'))
 
     def log(self, hash=None, limit=0, src=None, dst=None):
