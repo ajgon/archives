@@ -1,3 +1,4 @@
 - add branch/tag fetching
 - method to make all the localrepos up-to-date with the remote repos
 - pigit exceptions (PigitNotGitRepository)
+- method for checking if passed branch/tag is available in repo
