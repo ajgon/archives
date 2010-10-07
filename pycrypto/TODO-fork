@@ -1,0 +1,5 @@
+- clean asn1.BRE class - make it consistent with DRE class
+- for RSA set BRE as default padding algorithm
+- clean deciphering
+- add more ciphers to tables
+- ssh-rsa and other public key types - make it consistent and clean (not ugly if)
