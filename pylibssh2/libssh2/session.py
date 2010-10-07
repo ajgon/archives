@@ -284,4 +284,4 @@ class Session(object):
         @return: 0 on success or negative on failure
         @rtype: int
         """
-        raise NotImplementedError()
+        self._session.userauth_publickey_fromfile(username, publickey, privatekey, passphrase)
