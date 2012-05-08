@@ -19,7 +19,13 @@ module FormtasticBootstrap
               field_set_and_list_wrapping(*(args << html_options), &block)
             else
               legend = args.shift if args.first.is_a?(::String)
-              args = default_columns_for_object if @object && args.empty?
+              if html_options[:except] && @object && args.empty?
+                except = Array(html_options[:except][:name]).collect(&:to_sym)
+                except += model_name.constantize.columns.find_all {|c| Array(html_options[:except][:type]).collect(&:to_s).include?(c.type.to_s)}.collect {|c| c.name.to_sym}
+                args = default_columns_for_object - except if @object && args.empty?
+              else
+                args = default_columns_for_object if @object && args.empty?
+              end
               contents = fieldset_contents_from_column_list(args)
               args.unshift(legend) if legend.present?
               field_set_and_list_wrapping(*((args << html_options) << contents))

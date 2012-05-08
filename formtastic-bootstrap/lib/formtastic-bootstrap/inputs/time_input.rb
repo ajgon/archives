@@ -7,7 +7,7 @@ module FormtasticBootstrap
 
       def to_html
         generic_input_wrapping do
-          time_input_html
+          time_input_html false
         end
       end
 
