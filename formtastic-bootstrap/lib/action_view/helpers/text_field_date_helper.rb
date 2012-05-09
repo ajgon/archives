@@ -44,7 +44,7 @@ module ActionView
         original_date_separator = @options[:date_separator] 
 
         @options[:datetime_separator] = ""
-        @options[:date_separator] = " "
+        @options[:date_separator] = "-"
 
         # If the day is hidden and the month is visible, the day should be set to the 1st so all month choices are
         # valid (otherwise it could be 31 and February wouldn't be a valid date)
@@ -52,7 +52,7 @@ module ActionView
           @datetime = @datetime.change(:day => 1)
         end
 
-        [:day, :month, :year].each { |o| order.unshift(o) unless order.include?(o) }
+        [:year, :month, :day].each { |o| order.unshift(o) unless order.include?(o) }
 
         build_text_field_from_types(order).tap do
           # Restore.
@@ -76,7 +76,6 @@ module ActionView
 
         @options[:datetime_separator] = ''
         @options[:time_separator] = ':'
-        @options[:date_separator] = " "
 
         order += [:year, :month, :day] unless @options[:ignore_date]
 
@@ -111,13 +110,13 @@ module ActionView
 
       def text_field_day
         unless @options[:use_hidden] || @options[:discard_day]
-          build_text(:day, day, :leading_zeros => false)
+          build_text(:day, day, :leading_zeros => true)
         end
       end
 
       def text_field_month
         unless @options[:use_hidden] || @options[:discard_month]
-          build_text(:month, month.nil? ? "" : month_name(month), :leading_zeros => false)
+          build_text(:month, month.nil? ? "" : month, :leading_zeros => true)
         end
       end
 
@@ -137,7 +136,7 @@ module ActionView
       end
 
       def build_text(selected, value, options = {})
-        unless value.nil?
+        unless value.blank?
           options.reverse_merge!({:leading_zeros => true, :ampm => false})
           leading_zeros = options.delete(:leading_zeros)
           value = leading_zeros ? sprintf("%02d", value) : value
