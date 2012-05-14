@@ -1,0 +1,17 @@
+.row-fluid
+  %table.table.table-bordered.table-striped.table-data{'data-name' => @model.to_s}
+    %thead
+      %tr
+        - get_columns(@model).each do |column|
+          %th
+            %a{:href => '#', :rel => 'tooltip', :title => column.type}
+              = column.name.humanize
+        %th
+    %tbody
+    %tfoot
+      %tr
+        - get_columns(@model).each do |column|
+          %th
+            %a{:href => '#', :rel => 'tooltip', :title => column.type}
+              = column.name.humanize
+        %th

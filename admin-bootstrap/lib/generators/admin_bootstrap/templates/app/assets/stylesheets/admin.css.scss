@@ -1,0 +1,137 @@
+/* = require libraries/bootstrap
+ * = require libraries/bootstrap-responsive
+ * = require formtastic-bootstrap
+ * = require libraries/jquery-ui.bootstrap
+ * = require libraries/jquery-ui.timepicker
+ * = require libraries/prettify */
+
+div.dataTables_length {
+  label {
+    float: left;
+    text-align: left;
+  }
+  select {
+    width: 75px;
+  }
+}
+
+div.dataTables_filter {
+  label {
+    float: right;
+  }
+}
+
+div.dataTables_info {
+  padding-top: 8px;
+}
+
+div.dataTables_paginate {
+  float: right;
+  margin: 0;
+}
+
+div.DataTables_action {
+  width: 160px;
+}
+
+.alert-alert {
+  background-color: #f2dede;
+  border-color: #eed3d7;
+  color: #b94a48;
+}
+
+table.table {
+  margin-bottom: 6px;
+  clear: both;
+  thead {
+    .sort {
+      cursor: pointer;
+      *cursor: hand;
+      background-repeat: no-repeat;
+      background-position: center right;
+    }
+    .sorting {
+      @extend .sort;
+      background-image: image-url('admin/sort_both.png');
+    }
+    .sorting_asc {
+      @extend .sort;
+      background-image: image-url('admin/sort_asc.png');
+    }
+    .sorting_desc {
+      @extend .sort;
+      background-image: image-url('admin/sort_desc.png');
+    }
+    .sorting_asc_disabled {
+      @extend .sort;
+      background-image: image-url('admin/sort_asc_disabled.png');
+    }
+    .sorting_desc_disabled {
+      @extend .sort;
+      background-image: image-url('admin/sort_desc_disabled.png');
+    }
+  }
+  tr.highlight.odd {
+    td {
+      background: #E5E8FF;
+    }
+  }
+  tr.highlight.even {
+    td {
+      background: #F5F5FF;
+    }
+  }
+  td {
+    div {
+      height: 34px;
+      overflow: hidden;
+      text-ellipsis: ellipsis;
+    }
+  }
+  td:last-child {
+    div {
+      overflow: visible;
+      height: auto;
+    }
+  }
+}
+
+.editform {
+  max-width: 1260px;
+  margin: 0 auto;
+  textarea {
+    resize: vertical;
+    height: 90px;
+    min-height: 90px;
+  }
+  .tinymce {
+    height: 360px;
+  }
+  h1 {
+    margin-bottom: 20px;
+  }
+}
+
+.showitem {
+  max-width: 1260px;
+  margin: 0 auto;
+  h1 {
+    margin-bottom: 20px;
+  }
+}
+
+.wysiwyg {
+  .code, .raw {
+    position: relative;
+    margin-left: 0;
+  }
+  a {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    display: none;
+  }
+  :hover a {
+    display: block;
+  }
+}

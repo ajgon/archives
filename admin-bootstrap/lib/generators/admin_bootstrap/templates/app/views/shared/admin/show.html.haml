@@ -1,0 +1,20 @@
+.showitem.row-fluid
+  %h1.span12 #{@resource.class.name.underscore.humanize} record
+  %dl.dl-horizontal.span12
+    - @resource.admin_attributes.each do |key, value|
+      %dt #{key.humanize}
+      %dd
+        - if @resource.class.admin_columns[key.to_sym] and @resource.class.admin_columns[key.to_sym][:wysiwyg] === true
+          .wysiwyg.row-fluid
+            .raw.well.span10
+              #{raw(value)}
+              - unless @resource.class.admin_columns[key.to_sym] and @resource.class.admin_columns[key.to_sym][:showsource] === false
+                %a.label.label-info{:href => '#'} Show source
+            .code.span10
+              %pre.prettyprint.linenums #{value}
+              %a.label.label-info{:href => '#'} Show preview
+        - else
+          =value
+.showitem
+  .form-actions
+    %a.btn{:href => url_for(:action => :index)} Back
