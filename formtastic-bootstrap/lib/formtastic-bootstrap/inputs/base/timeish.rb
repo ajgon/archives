@@ -21,6 +21,7 @@ module FormtasticBootstrap
 
         def fragment_input_html(fragment, klass, datetime)
           opts = input_options.merge(:prefix => object_name, :field_name => fragment_name(fragment, datetime), :default => value, :include_blank => include_blank?)
+          template.class.send(:include, ActionView::Helpers::TextFieldDateHelper) # Rails with specific gem configuration gets period - this is to tame the leak (5 hours of debugging didn't help)
           template.send(:"text_field_#{fragment}", value, opts, input_html_options.merge(:id => fragment_id(fragment, datetime), :name => fragment_name(fragment, datetime), :class => klass))
         end
 
