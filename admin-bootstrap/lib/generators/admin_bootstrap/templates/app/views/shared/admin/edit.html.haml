@@ -1,0 +1,6 @@
+=semantic_form_for @resource, :url => {:action => :update, :id => @resource.id}, :html => {:class => 'form-horizontal editform row-fluid'} do |f|
+  %h1.offset2.span10 Edit #{@resource.class.name.underscore.humanize.downcase}
+  =render 'form', :f => f
+  .form-actions
+    =submit_tag "Save", class: "btn btn-primary"
+    %a.btn{:href => url_for(:action => :index)} Cancel
