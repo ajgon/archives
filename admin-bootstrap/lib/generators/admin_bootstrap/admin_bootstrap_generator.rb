@@ -17,7 +17,7 @@ class AdminBootstrapGenerator < Rails::Generators::NamedBase
   end
 
   def __create_route
-    route "namespace :admin do resources :#{name.classify.constantize.table_name} end"
+    route "namespace :admin do resources :#{raw_file_name} end"
   end
 
   def __create_controller
@@ -37,7 +37,7 @@ class AdminBootstrapGenerator < Rails::Generators::NamedBase
 
   # template privates
   def raw_file_name
-    name.classify.constantize.table_name
+    model_name.table_name
   end
 
   def raw_class_name
@@ -50,6 +50,14 @@ class AdminBootstrapGenerator < Rails::Generators::NamedBase
 
   def controller_class_name
     raw_class_name + 'Controller'
+  end
+
+  def model_name
+    begin
+      name.classify.constantize
+    rescue
+      name.capitalize.gsub(/_[a-z]/) {|i| i[1].upcase }.constantize
+    end
   end
 
 end

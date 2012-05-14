@@ -2,7 +2,18 @@ namespace :admin_bootstrap do
   desc "Copy all necessary assets and files for admin bootstrap, to make it look pretty"
   task :initialize => :environment do
     TEMPLATE_PATH = File.expand_path(File.join(File.dirname(__FILE__), '..', 'generators', 'admin_bootstrap', 'templates'))
-    RESOURCES = %w(app/assets app/controllers/admin_controller.rb app/helpers/admin_helper.rb app/models/admin.rb app/views/shared/admin)
+    RESOURCES = %w(app/assets app/controllers/admin_controller.rb app/helpers/admin_helper.rb app/models/admin.rb app/views/shared/admin app/views/layouts/admin.html.haml app/views/layouts/admin.html.erb)
+
+    formtastic_initializer = File.join(Rails.root, 'config', 'initializers', 'formtastic.rb')
+
+    unless File.exists?(formtastic_initializer)
+      Rails::Generators.invoke("formtastic:install")
+    end
+
+    File.open(formtastic_initializer, 'a') do |fi|
+      fi.puts("\nFormtastic::Helpers::FormHelper.builder = FormtasticBootstrap::FormBuilder\n")
+    end
+
 
     files = RESOURCES.collect do |resource|
       path = File.join(TEMPLATE_PATH, resource)
