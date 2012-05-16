@@ -13,51 +13,50 @@ class AdminBootstrapGenerator < Rails::Generators::NamedBase
 
   private
   def __create_model
+    ARGV.unshift(name) unless ARGV.first == name
+    ARGV.push('--orm=active_record') unless ARGV.find {|arg| arg.match(/^--orm/)}
     Rails::Generators.invoke("model", ARGV + ['--skip'])
   end
 
   def __create_route
-    route "namespace :admin do resources :#{raw_file_name} end"
+    route "namespace :admin do resources :#{model_file.pluralize} end"
   end
 
   def __create_controller
-    template File.join('app', 'controllers', 'admin', 'controller.rb'), File.join('app', 'controllers', 'admin', "#{controller_file_name}.rb")
+    template File.join('app', 'controllers', 'admin', 'controller.rb'), File.join('app', 'controllers', 'admin', "#{controller_file}.rb")
   end
 
   def __create_views
     template_extension = options.haml? ? 'haml' : 'erb'
     ['_actions', '_form', 'edit', 'index', 'new', 'show'].each do |template_name|
-      template File.join('app', 'views', 'admin', '_view', "#{template_name}.html.#{template_extension}"), File.join('app', 'views', 'admin', raw_file_name, "#{template_name}.html.#{template_extension}")
+      template File.join('app', 'views', 'admin', '_view', "#{template_name}.html.#{template_extension}"), File.join('app', 'views', 'admin', model_file.pluralize, "#{template_name}.html.#{template_extension}")
     end
   end
 
   def __create_tests
-    template File.join('spec', 'controllers', 'admin', 'controller.rb'), File.join('spec', 'controllers', 'admin', "#{raw_file_name}_spec.rb")
+    template File.join('spec', 'controllers', 'admin', 'controller.rb'), File.join('spec', 'controllers', 'admin', "#{model_file.pluralize}_controller_spec.rb")
   end
 
   # template privates
-  def raw_file_name
-    model_name.table_name
+  def controller_class
+    model_class.pluralize + 'Controller'
   end
 
-  def raw_class_name
-    raw_file_name.capitalize.gsub(/_[a-z]/) {|i| i[1].upcase}
+  def controller_file
+    model_file.pluralize + '_controller'
   end
 
-  def controller_file_name
-    raw_file_name + '_controller'
-  end
-
-  def controller_class_name
-    raw_class_name + 'Controller'
-  end
-
-  def model_name
+  def model_class
     begin
       name.classify.constantize
+      name.classify
     rescue
-      name.capitalize.gsub(/_[a-z]/) {|i| i[1].upcase }.constantize
+      name.capitalize.gsub(/_[a-z]/) {|i| i[1].upcase }
     end
+  end
+
+  def model_file
+    model_class.underscore
   end
 
 end

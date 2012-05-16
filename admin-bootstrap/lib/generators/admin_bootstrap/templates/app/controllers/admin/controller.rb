@@ -1,2 +1,2 @@
-class Admin::<%= controller_class_name %> < AdminController
+class Admin::<%= controller_class %> < AdminController
 end

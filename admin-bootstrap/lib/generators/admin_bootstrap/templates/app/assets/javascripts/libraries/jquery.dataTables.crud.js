@@ -35,7 +35,7 @@
         var _fnMultipleRowSelect = function(oSettings) {
             $(this).each(_fnToggleSelection);
             $(this).find('tbody tr').click(function(e) {
-                if(e.target.nodeName.toUpperCase() != 'TR' && e.target.nodeName.toUpperCase() != 'TD') {
+                if(e.target.nodeName.toUpperCase() == 'A') {
                     return;
                 }
                 if(!shiftKeyPressed) {
@@ -62,4 +62,4 @@
         });
 
     };
-})(jQuery);
+}(jQuery));

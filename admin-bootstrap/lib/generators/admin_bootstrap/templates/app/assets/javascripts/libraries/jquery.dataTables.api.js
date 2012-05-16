@@ -9,6 +9,7 @@ $(document).ready(function() {
         var that = this;
         var iStart = oSettings._iDisplayStart;
         var aData = [];
+        var i;
 
         this.oApi._fnServerParams( oSettings, aData );
 
@@ -20,7 +21,7 @@ $(document).ready(function() {
             var aData =  (oSettings.sAjaxDataProp !== "") ?
                 that.oApi._fnGetObjectDataFn( oSettings.sAjaxDataProp )( json ) : json;
 
-            for ( var i=0 ; i<aData.length ; i++ )
+            for ( i=0 ; i<aData.length ; i++ )
             {
                 that.oApi._fnAddData( oSettings, aData[i] );
             }

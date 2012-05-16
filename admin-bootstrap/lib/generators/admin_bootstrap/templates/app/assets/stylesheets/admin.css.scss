@@ -5,6 +5,13 @@
  * = require libraries/jquery-ui.timepicker
  * = require libraries/prettify */
 
+body {
+  padding-top: 60px;
+  background-image: image-url('admin/grid-18px-masked.png');
+  background-position: 0 40px;
+  background-repeat: repeat-x;
+}
+
 div.dataTables_length {
   label {
     float: left;
@@ -81,6 +88,9 @@ table.table {
       background: #F5F5FF;
     }
   }
+  th, td {
+    background: #fff;
+  }
   td {
     div {
       height: 34px;
@@ -94,6 +104,13 @@ table.table {
       height: auto;
     }
   }
+}
+
+.pagination .disabled span,
+.pagination .disabled a,
+.pagination li span
+.pagination li a {
+  background: #fff;
 }
 
 .editform {
