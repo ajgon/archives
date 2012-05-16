@@ -1,0 +1,25 @@
+<div class="row-fluid">
+    <table class="table table-bordered table-striped table-data" data-name="<%= @model.to_s %>">
+        <thead>
+            <tr>
+<% get_columns(@model).each do |column| %>
+                <th>
+                    <a href="#" rel="tooltip" title="<%= column.type %>"><%= column.name.humanize %></a>
+                </th>
+<% end %>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+            <tr>
+<% get_columns(@model).each do |column| %>
+                  <th>
+                    <a href="#" rel="tooltip" title="<%= column.type %>"><%= column.name.humanize %></a>
+                  </th>
+<% end %>
+              <th></th>
+            </tr>
+        </tfoot>
+    </table>
+</div>

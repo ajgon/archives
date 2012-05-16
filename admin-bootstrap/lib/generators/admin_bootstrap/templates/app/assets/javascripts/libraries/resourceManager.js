@@ -8,6 +8,7 @@ var ResourceManager = {
     _destroy: [],
 
     register: function(resources, callback) {
+        var i;
         if(resources == 'all') {
             resources = ['index', 'show', 'new', 'create', 'edit', 'update', 'destroy'];
         }
@@ -15,15 +16,18 @@ var ResourceManager = {
             resources = [resources];
         }
         if(resources instanceof Array) {
-            for(var resource in resources) {
-                this['_' + resources[resource]].push(callback);
+            for(i; i < resources.length; i++) {
+                this['_' + resources[i]].push(callback);
             }
         }
     },
 
     launch: function(resource) {
-        for(var i in this['_' + resource]) {
-            this['_' + resource][i]();
+        var i;
+        for(i in this['_' + resource]) {
+            if(this['_' + resource].hasOwnProperty(i)) {
+                this['_' + resource][i]();
+            }
         }
     }
 };

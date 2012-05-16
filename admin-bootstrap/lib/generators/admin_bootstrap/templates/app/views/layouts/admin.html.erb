@@ -1,28 +1,48 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Admin Panel</title>
-    <%= stylesheet_link_tag    "admin", params[:controller], :media => "all" %>
-    <%= tinymce_assets %>
-    <%= javascript_include_tag "admin", params[:controller] %>
-    <script type="text/javascript">
-      var RESOURCE = '<%= params[:action] %>';
-    </script>
-  </head>
-  <body>
-    <div class="container-fluid">
-      <div class="row-fluid" id="flash">
-<% flash.each do |name, msg| %>
-        <div class="alert alert-<%= name %> fade in">
-          <a class="close" href="#" data-dismiss="alert">&times;</a>
-          <%= msg %>
-        </div>
+    <head>
+        <title>Admin Panel</title>
+        <%= stylesheet_link_tag    "admin", params[:controller], :media => "all" %>
+        <%= tinymce_assets %>
+        <%= javascript_include_tag "admin", params[:controller] %>
+        <script type="text/javascript">
+            var RESOURCE = '<%= params[:action] %>';
+        </script>
+    </head>
+    <body>
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="brand" href="<%= root_path %>"><%=  Rails.application.class.parent_name %></a>
+                    <div class="nav-collapse">
+                        <ul class="nav">
+                            <li><a href="<%= admin_root_path %>">Dashboard</a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Settings <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+<% @settings_paths.each do |controller| %>
+                                    <%= link_to(controller[:name], controller[:params]) %>
 <% end %>
-      </div>
-      <div class="row-fluid">
-        <%= yield %>
-      </div>
-    </div>
-  </body>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid" id="flash">
+<% flash.each do |name, msg| %>
+                <div class="alert alert-<%= name %> fade in">
+                    <a class="close" href="#" data-dismiss="alert">&times;</a>
+                    <%= msg %>
+                </div>
+            </div>
+<% end %>
+        </div>
+        <div class="row-fluid">
+            <%= yield %>
+        </div>
+    </body>
 </html>
 

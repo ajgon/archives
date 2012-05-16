@@ -1,0 +1,31 @@
+<div class="showitem row-fluid">
+    <h1 class="span12"><%= @resource.class.name.underscore.humanize %> record</h1>
+    <dl class="dl-horizontal span12">
+<% @resource.admin_attributes.each do |key, value| %>
+        <dt><%= key.humanize %></dt>
+        <dd>
+<%   if @resource.class.admin_columns[key.to_sym] and @resource.class.admin_columns[key.to_sym][:wysiwyg] === true %>
+            <div class="wysiwyg row-fluid">
+                <div class="raw well span10">
+                    <%= raw(value) %>
+<%     unless @resource.class.admin_columns[key.to_sym] and @resource.class.admin_columns[key.to_sym][:showsource] === false %>
+                    <a href="#" class="label label-info">Show source</a>
+<%     end %>
+                </div>
+                <div class="code span10">
+                    <pre class="prettyprint linenums"><%= value %></pre>
+                    <a href="#" class="label label-info">Show preview</a>
+                </div>
+            </div>
+<%   else %>
+            <%= value %>
+<%   end %>
+        </dd>
+<% end %>
+    </dl>
+</div>
+<div class="showitem">
+    <div class="form-actions">
+        <a href="<%= url_for(:action => :index) %>" class="btn">Back</a>
+    </div>
+</div>

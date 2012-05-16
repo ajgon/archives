@@ -51,13 +51,13 @@ $.fn.numeric.keypress = function(e)
 	var decimal = $.data(this, "numeric.decimal");
 	var negative = $.data(this, "numeric.negative");
 	// get the key that was pressed
-	var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
+    var key = e.charCode || e.keyCode || 0;
 	// allow enter/return key (only when in an input box)
 	if(key == 13 && this.nodeName.toLowerCase() == "input")
 	{
 		return true;
 	}
-	else if(key == 13)
+	if(key == 13)
 	{
 		return false;
 	}
@@ -140,7 +140,7 @@ $.fn.numeric.keypress = function(e)
 
 $.fn.numeric.keyup = function(e)
 {
-	var val = $(this).value;
+	var val = $(this).value, i, j, k;
 	if(val && val.length > 0)
 	{
 		// get carat (cursor) position
@@ -172,7 +172,7 @@ $.fn.numeric.keyup = function(e)
 		// get length of the value (to loop through)
 		var length = val.length;
 		// loop backwards (to prevent going out of bounds)
-		for(var i = length - 1; i >= 0; i--)
+		for(i = length - 1; i >= 0; i--)
 		{
 			var ch = val.charAt(i);
 			// remove '-' if it is in the wrong place
@@ -187,7 +187,7 @@ $.fn.numeric.keyup = function(e)
 			}
 			var validChar = false;
 			// loop through validChars
-			for(var j = 0; j < validChars.length; j++)
+			for(j = 0; j < validChars.length; j++)
 			{
 				// if it is valid, break out the loop
 				if(ch == validChars[j])
@@ -206,7 +206,7 @@ $.fn.numeric.keyup = function(e)
 		var firstDecimal = val.indexOf(decimal);
 		if(firstDecimal > 0)
 		{
-			for(var k = length - 1; k > firstDecimal; k--)
+			for(k = length - 1; k > firstDecimal; k--)
 			{
 				var chch = val.charAt(k);
 				// remove decimal character
@@ -251,7 +251,8 @@ $.fn.getSelectionStart = function(o)
 		r.moveEnd('character', o.value.length);
 		if (r.text === '') { return o.value.length; }
 		return o.value.lastIndexOf(r.text);
-	} else { return o.selectionStart; }
+	}
+    return o.selectionStart;
 };
 
 // set the selection, o is the object (input), p is the position ([start, end] or just start)
@@ -278,4 +279,4 @@ $.fn.setSelection = function(o, p)
 	}
 };
 
-})(jQuery);
+}(jQuery));

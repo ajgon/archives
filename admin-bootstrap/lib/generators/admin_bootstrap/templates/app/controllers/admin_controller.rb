@@ -2,6 +2,7 @@ class AdminController < ApplicationController
   include AdminHelper
 
   before_filter :fetch_resource, :only => [:edit, :update, :show, :destroy]
+  before_filter :fetch_settings_paths, :only => [:index, :new, :edit, :show]
 
   def index
     @model = model
@@ -63,6 +64,18 @@ class AdminController < ApplicationController
   private
   def fetch_resource
     @resource = model.find(params[:id])
+  end
+
+  def fetch_settings_paths
+    Dir.glob(File.join(Rails.root, 'app', 'controllers', 'admin', '*')).each do |controller_file|
+      require controller_file
+    end unless Rails.env == 'production'
+    @settings_paths = (AdminController.subclasses - [Admin::DashboardController]).collect do |controller|
+      {
+          :name => controller.controller_name.humanize,
+          :params => {:controller => controller.controller_path, :action => :index}
+      }
+    end
   end
 
   def model

@@ -40,10 +40,6 @@ module ActiveRecord
       if self.admin_columns[column][:wysiwyg]
         formtastic_options[:input_html] = {:class => 'tinymce'}
       end
-      #if self.admin_columns[column][:visible] === false
-      #  formtastic_options[:required] = false
-      #  formtastic_options[:wrapper_html] = {:style => 'display: none;'}
-      #end
       formtastic_options
     end
   end
@@ -53,7 +49,7 @@ end
 module FormtasticBootstrap
   module Helpers
     module InputsHelper
-      include FormtasticBootstrap::Helpers::FieldsetWrapper
+      include FormtasticBootstrap::Helpers::FieldsetWrapper if defined?(FormtasticBootstrap::Helpers::FieldsetWrapper)
 
       def fieldset_contents_from_column_list(columns)
         columns.collect do |method|
@@ -74,6 +70,23 @@ module FormtasticBootstrap
         end
       end
 
+    end
+  end
+end
+
+# Hack to bypass another great idea of some rubygems developer.... har har
+module Gem
+  def self.available?(dep, *requirements)
+    if Gem::Specification.respond_to?(:find_all_by_name)
+      not Gem::Specification.find_all_by_name(dep).empty?
+    else
+      requirements = Gem::Requirement.default if requirements.empty?
+
+      unless dep.respond_to?(:name) and dep.respond_to?(:requirement) then
+        dep = Gem::Dependency.new dep, requirements
+      end
+
+      not dep.matching_specs(true).empty?
     end
   end
 end
