@@ -46,6 +46,12 @@ describe AdminBootstrapGenerator do
       File.read(controller_file).should match("Admin::#{NAME.classify.pluralize}Controller < AdminController")
     end
 
+    it 'should create helper' do
+      helper_file = File.join(DESTINATION, 'app', 'helpers', 'admin', NAME.pluralize + '_helper.rb')
+      File.exists?(helper_file).should be_true
+      File.read(helper_file).should match("module Admin::#{NAME.classify.pluralize}Helper")
+    end
+
     after(:all) do
       clean_generated_files
     end
