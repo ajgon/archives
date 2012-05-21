@@ -17,6 +17,7 @@ class AdminBootstrapGenerator < Rails::Generators::NamedBase
   def __create_model
     ARGV.unshift(name) unless ARGV.first == name
     ARGV.push('--orm=active_record') unless ARGV.find {|arg| arg.match(/^--orm/)}
+    ARGV.push('--no-migration') if File.exists?(File.join(Rails.root, 'app', 'models', "#{name}.rb"))
     Rails::Generators.invoke("model", ARGV + ['--skip'])
   end
 
