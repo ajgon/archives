@@ -8,6 +8,7 @@ class AdminBootstrapGenerator < Rails::Generators::NamedBase
     __create_route
     __create_controller
     __create_helper
+    __create_assets
     __create_views
     __create_tests if options.rspec?
   end
@@ -29,6 +30,11 @@ class AdminBootstrapGenerator < Rails::Generators::NamedBase
 
   def __create_helper
     template File.join('app', 'helpers', 'admin', 'helper.rb'), File.join('app', 'helpers', 'admin', "#{model_file.pluralize}_helper.rb")
+  end
+
+  def __create_assets
+    template File.join('app', 'assets', 'javascripts', 'admin', 'asset.js.coffee'), File.join('app', 'assets', 'javascripts', 'admin', "#{model_file.pluralize}.js.coffee")
+    template File.join('app', 'assets', 'stylesheets', 'admin', 'asset.css.scss'),  File.join('app', 'assets', 'stylesheets', 'admin', "#{model_file.pluralize}.css.scss" )
   end
 
   def __create_views
