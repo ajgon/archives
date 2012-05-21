@@ -52,6 +52,13 @@ describe AdminBootstrapGenerator do
       File.read(helper_file).should match("module Admin::#{NAME.classify.pluralize}Helper")
     end
 
+    it 'should create assets' do
+      asset_js  = File.join(DESTINATION, 'app', 'assets', 'javascripts', 'admin', NAME.pluralize + '.js.coffee')
+      asset_css = File.join(DESTINATION, 'app', 'assets', 'stylesheets', 'admin', NAME.pluralize + '.css.scss')
+      File.exists?(asset_js).should be_true
+      File.exists?(asset_css).should be_true
+    end
+
     after(:all) do
       clean_generated_files
     end

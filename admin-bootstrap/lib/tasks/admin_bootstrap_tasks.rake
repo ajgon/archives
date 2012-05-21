@@ -2,7 +2,23 @@ require 'rails/generators'
 
 class AdminBootstrapTask
   TEMPLATE_PATH = File.expand_path(File.join(File.dirname(__FILE__), '..', 'generators', 'admin_bootstrap', 'templates'))
-  RESOURCES = %w(app/assets app/controllers/admin_controller.rb app/controllers/admin/dashboard_controller.rb app/helpers/admin_helper.rb app/helpers/admin/dashboard_helper.rb app/models/admin.rb app/views/shared/admin app/views/layouts/admin.html.haml app/views/layouts/admin.html.erb app/views/admin/dashboard/index.html.haml app/views/admin/dashboard/index.html.erb)
+  RESOURCES = %w(app/assets/images
+                 app/assets/javascripts/admin.js
+                 app/assets/javascripts/libraries
+                 app/assets/javascripts/admin/dashboard.js.coffee
+                 app/assets/stylesheets/admin.css.scss
+                 app/assets/stylesheets/libraries
+                 app/assets/stylesheets/admin/dashboard.css.scss
+                 app/controllers/admin_controller.rb
+                 app/controllers/admin/dashboard_controller.rb
+                 app/helpers/admin_helper.rb
+                 app/helpers/admin/dashboard_helper.rb
+                 app/models/admin.rb
+                 app/views/shared/admin
+                 app/views/layouts/admin.html.haml
+                 app/views/layouts/admin.html.erb
+                 app/views/admin/dashboard/index.html.haml
+                 app/views/admin/dashboard/index.html.erb)
 
   def self.prepare options = {}
     use_haml = !options[:erb] && (options[:haml] or (!(options[:haml] === false) and (Gem.available?('haml') and Gem.available?('haml-rails'))))
