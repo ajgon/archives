@@ -7,6 +7,7 @@ class AdminBootstrapGenerator < Rails::Generators::NamedBase
     __create_model
     __create_route
     __create_controller
+    __create_helper
     __create_views
     __create_tests if options.rspec?
   end
@@ -24,6 +25,10 @@ class AdminBootstrapGenerator < Rails::Generators::NamedBase
 
   def __create_controller
     template File.join('app', 'controllers', 'admin', 'controller.rb'), File.join('app', 'controllers', 'admin', "#{controller_file}.rb")
+  end
+
+  def __create_helper
+    template File.join('app', 'helpers', 'admin', 'helper.rb'), File.join('app', 'helpers', 'admin', "#{model_file.pluralize}_helper.rb")
   end
 
   def __create_views
