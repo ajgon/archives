@@ -35,6 +35,7 @@ describe 'admin_bootstrap tasks' do
 
     describe ':initialize' do
       before(:all) do
+        prepare_spec
         prepare_routes
         prepare_formtastic
         @task_name = "admin_bootstrap:initialize"
@@ -47,6 +48,10 @@ describe 'admin_bootstrap tasks' do
 
       it 'should update routes' do
         File.read(File.join(DESTINATION, 'config', 'routes.rb')).should match("namespace :admin do root :to => 'dashboard#index' end")
+      end
+
+      it 'should update vanilla spec_helper' do
+        File.read(File.join(DESTINATION, 'spec', 'spec_helper.rb')).should match(/\Arequire \'admin_bootstrap_helper.rb\'\s*$/)
       end
 
       it 'should set FormtasticBootstrap FormBuilder in Formtastic initializer' do
@@ -68,6 +73,7 @@ describe 'admin_bootstrap tasks' do
 
     describe ':initialize:haml' do
       before(:all) do
+        prepare_spec :additional_requires => true
         prepare_routes
         prepare_formtastic
         @task_name = "admin_bootstrap:initialize:haml"
@@ -76,6 +82,11 @@ describe 'admin_bootstrap tasks' do
 
       it "should have 'environment' as a prerequisite" do
         @rake[@task_name].prerequisites.should include("environment")
+      end
+
+      it 'should update spec_helper with additional requires inside' do
+        File.read(File.join(DESTINATION, 'spec', 'spec_helper.rb')).should match(/^require \'admin_bootstrap_helper.rb\'\s*$/)
+        File.read(File.join(DESTINATION, 'spec', 'spec_helper.rb')).should_not match(/\Arequire \'admin_bootstrap_helper.rb\'\s*$/)
       end
 
       it 'should copy all the files with haml views included' do

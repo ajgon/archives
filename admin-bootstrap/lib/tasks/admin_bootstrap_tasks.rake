@@ -18,7 +18,13 @@ class AdminBootstrapTask
                  app/views/layouts/admin.html.haml
                  app/views/layouts/admin.html.erb
                  app/views/admin/dashboard/index.html.haml
-                 app/views/admin/dashboard/index.html.erb)
+                 app/views/admin/dashboard/index.html.erb
+                 spec/controllers/admin_controller_spec.rb
+                 spec/controllers/admin/dashboard_controller_spec.rb
+                 spec/helpers/admin_helper_spec.rb
+                 spec/helpers/admin/dashboard_helper_spec.rb
+                 spec/support
+                 spec/admin_bootstrap_helper.rb)
 
   def self.prepare options = {}
     use_haml = !options[:erb] && (options[:haml] or (!(options[:haml] === false) and (Gem.available?('haml') and Gem.available?('haml-rails'))))
@@ -28,11 +34,25 @@ class AdminBootstrapTask
     route_rule = "\n  namespace :admin do root :to => 'dashboard#index' end\n"
 
     unless routes_content.match(route_rule.strip)
+      new_routes = routes_content.gsub(/\.routes\.draw do(?:\s*\|map\|)?\s*$/) do |after|
+        after + route_rule
+      end
       File.open(routes_file, 'w') do |f|
-        new_routes = routes_content.gsub(/\.routes\.draw do(?:\s*\|map\|)?\s*$/) do |after|
-          after + route_rule
-        end
         f.write(new_routes)
+      end
+    end
+
+    spec_helper_file = File.join(Rails.root, 'spec', 'spec_helper.rb')
+    if(File.exists?(spec_helper_file))
+      spec_helper_content = File.read(spec_helper_file)
+      spec_require = "require 'admin_bootstrap_helper.rb'\n"
+      unless spec_helper_content.include?(spec_require)
+        last_require = spec_helper_content.scan(/^\s*require.*$/).last.to_s
+        last_require = last_require.empty? ? '' : "\n#{last_require}\n"
+        new_spec_helper = spec_helper_content.sub(last_require, "#{last_require}#{spec_require}")
+        File.open(spec_helper_file, 'w') do |f|
+          f.write(new_spec_helper)
+        end
       end
     end
 

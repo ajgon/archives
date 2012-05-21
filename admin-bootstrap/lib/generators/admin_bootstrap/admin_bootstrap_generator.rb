@@ -45,7 +45,8 @@ class AdminBootstrapGenerator < Rails::Generators::NamedBase
   end
 
   def __create_tests
-    template File.join('spec', 'controllers', 'admin', 'controller.rb'), File.join('spec', 'controllers', 'admin', "#{model_file.pluralize}_controller_spec.rb")
+    template File.join('spec', 'controllers', 'admin', 'controller_spec.rb'), File.join('spec', 'controllers', 'admin', "#{model_file.pluralize}_controller_spec.rb")
+    template File.join('spec', 'helpers', 'admin', 'helper_spec.rb'), File.join('spec', 'helpers', 'admin', "#{model_file.pluralize}_helper_spec.rb")
   end
 
   # template privates
