@@ -59,6 +59,17 @@ describe AdminBootstrapGenerator do
       File.exists?(asset_css).should be_true
     end
 
+    it 'should create specs' do
+      controller_spec = File.join(DESTINATION, 'spec', 'controllers', 'admin', NAME.pluralize + '_controller_spec.rb')
+      helper_spec     = File.join(DESTINATION, 'spec', 'helpers', 'admin', NAME.pluralize + '_helper_spec.rb')
+      File.exists?(controller_spec).should be_true
+      File.exists?(helper_spec).should be_true
+      controller_contents = File.read(controller_spec)
+      controller_contents.should match("describe Admin::#{NAME.classify.pluralize}Controller do")
+      controller_contents.should match("it_should_behave_like \"admin resource\"")
+      File.read(helper_spec).scan("Admin::#{NAME.classify.pluralize}Helper").should have(3).items
+    end
+
     after(:all) do
       clean_generated_files
     end
