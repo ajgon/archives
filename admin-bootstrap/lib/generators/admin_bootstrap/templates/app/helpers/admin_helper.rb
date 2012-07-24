@@ -1,7 +1,7 @@
 module AdminHelper
   # @param [Object] model
   def dataTables_response_for model
-    columns = model.columns.find_all {|c| c.type != :binary}.collect {|c| c.name}
+    columns = model.column_names(:admin => true)
     behaviour = {}
 
     unless params[:sSearch].blank?
@@ -30,14 +30,10 @@ module AdminHelper
       row
     end
     return {
-        :iTotalRecords => model.count,                                  
+        :iTotalRecords => model.count,
         :iTotalDisplayRecords => model.count(behaviour),
         :sEcho => params[:sEcho],
         :aaData => data
     }
-  end
-
-  def get_columns model
-    model.columns.find_all {|c| c.type != :binary}
   end
 end
