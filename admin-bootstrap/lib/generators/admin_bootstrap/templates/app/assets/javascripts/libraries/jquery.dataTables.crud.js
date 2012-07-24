@@ -35,7 +35,7 @@
         var _fnMultipleRowSelect = function(oSettings) {
             $(this).each(_fnToggleSelection);
             $(this).find('tbody tr').click(function(e) {
-                if(e.target.nodeName.toUpperCase() == 'A') {
+                if(e.target.nodeName.toUpperCase() == 'A' || $(this).find('.dataTables_empty').size()) {
                     return;
                 }
                 if(!shiftKeyPressed) {
