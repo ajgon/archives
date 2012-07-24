@@ -16,7 +16,7 @@ var ResourceManager = {
             resources = [resources];
         }
         if(resources instanceof Array) {
-            for(i; i < resources.length; i++) {
+            for(i = 0; i < resources.length; i++) {
                 this['_' + resources[i]].push(callback);
             }
         }

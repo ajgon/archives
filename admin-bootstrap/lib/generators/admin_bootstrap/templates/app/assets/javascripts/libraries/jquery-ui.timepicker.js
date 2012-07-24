@@ -143,10 +143,8 @@ $.extend(Timepicker.prototype, {
 			inlineSettings = {};
 
 		for (var attrName in this._defaults) {
-            console.log($input);
 			var attrValue = $input.attr('time:' + attrName);
 			if (attrValue) {
-                console.log(attrValue);
 				try {
 					inlineSettings[attrName] = eval(attrValue);
 				} catch (err) {
