@@ -83,7 +83,6 @@ class AdminBootstrapTask
 
     files.each do |file|
       begin
-        FileUtils.mkdir_p File.join(Rails.root, File.dirname(file)) unless File.exists?(file)
         unless File.exists?(File.join(Rails.root, file))
           FileUtils.mkdir_p(File.join(Rails.root, File.dirname(file)))
           FileUtils.cp File.join(TEMPLATE_PATH, file), File.join(Rails.root, file)
