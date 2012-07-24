@@ -45,6 +45,7 @@ ResourceManager.register(['index'], function() {
     $('.table-data').dataTable( {
         "bProcessing": true,
         "bServerSide": true,
+        "sServerMethod": "POST",
         "sDom": "<'row-fluid'<'span2'l><'DataTables_actions span4'><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
         "sAjaxSource": window.location.pathname.replace(/\/$/, '') + '.json',
         "sPaginationType": "bootstrap",
