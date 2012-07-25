@@ -6,26 +6,30 @@ module AdminBootstrap
   module ClassMethods
     module ActiveRecord
 
+      def admin_option name, options = {}
+        options = {:enabled => true, :value => options}
+        self._admin_options = set_admin_param :admin_options, name, options
+      end
+
       def admin_column name, options = nil
-        if self.admin_columns.nil?
-          self._admin_columns = {}
-        else
-          self._admin_columns = self._admin_columns.dup
-        end
+        __admin_columns = set_admin_param :admin_columns, name, options
+        self._admin_columns = __admin_columns unless options.nil?
+        __admin_columns
+      end
 
-        return admin_columns[name] || {} unless options
-
-        if self._admin_columns[name.to_sym]
-          self._admin_columns[name.to_sym] = self._admin_columns[name.to_sym].merge(options.symbolize_keys)
-        else
-          self._admin_columns = self._admin_columns.merge(name.to_sym => options.symbolize_keys)
-        end
-
+      def admin_options
+        self._admin_options || {}
       end
 
       def admin_columns
         call_defaults unless self._admin_columns
         self._admin_columns
+      end
+
+      def admin_option_value name
+        if admin_options[name] and admin_options[name][:enabled]
+          admin_options[name][:value]
+        end
       end
 
       def admin_plugins for_column, filter = nil
@@ -75,6 +79,7 @@ module AdminBootstrap
             _columns[_columns.index(extra_options[:replace])]      = extra_column if extra_options[:replace]
           end
           _columns = _columns - admin_columns.collect {|k, v| k if v[:visible] === false}.compact
+          _columns = Array(admin_option_value(:admin_columns_order)) | _columns if admin_option_value(:admin_columns_order)
           @columns_admin ||= _columns.collect do |admin_column|
             @columns.find {|column| column.name == admin_column.to_s} || @columns.first.class.new(admin_column.to_s, nil, 'string', true)
           end
@@ -113,6 +118,22 @@ module AdminBootstrap
         else
           @content_admin_columns ||= columns(:admin => true).reject { |c| c.primary || c.name =~ /(_id|_count)$/ || c.name == inheritance_column }
         end
+      end
+
+      private
+      def set_admin_param param, name, options = nil
+        if self.__send__(param).nil?
+          __opt = {}
+        else
+          __opt = self.__send__(param).dup
+        end
+        return __send__('_' + param.to_s)[name] || {} unless options
+        if __opt[name.to_sym]
+          __opt[name.to_sym] = __opt[name.to_sym].merge(options.symbolize_keys)
+        else
+          __opt = __opt.merge(name.to_sym => options.symbolize_keys)
+        end
+        __opt
       end
 
     end

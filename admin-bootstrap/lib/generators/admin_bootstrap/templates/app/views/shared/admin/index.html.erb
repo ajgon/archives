@@ -1,5 +1,5 @@
 <div class="row-fluid">
-    <table class="table table-bordered table-striped table-data" data-name="<%= @model.to_s %>">
+    <table class="table table-bordered table-striped table-data" data-name="<%= @model.to_s %>" data-disabled-actions="<%= Array(@model.admin_option_value(:disabled_actions)).join(' ') %>">
         <thead>
             <tr>
 <% @model.columns(:admin => true).each do |column| %>

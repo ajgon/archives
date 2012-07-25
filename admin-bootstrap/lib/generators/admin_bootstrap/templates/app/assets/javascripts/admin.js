@@ -38,6 +38,9 @@ ResourceManager.register(['index'], function() {
 
 // Fetch dataTables
 ResourceManager.register(['index'], function() {
+    var datatables_actions = '',
+        disabled_actions;
+
     $.extend( $.fn.dataTableExt.oStdClasses, {
         "sWrapper": "dataTables_wrapper form-inline"
     } );
@@ -61,12 +64,16 @@ ResourceManager.register(['index'], function() {
         }
     });
 
-    $('.DataTables_actions').each(function() {
-        $(this).html(
-            '<a href=' + window.location.pathname + "/new "  +  'class="btn btn-primary btn-mini DataTables_add">' +
-             'Add new ' + $(this).closest('.dataTables_wrapper').find('.table').data('name').toLowerCase() + '</a>' +
-             ' <a href="#" class="btn btn-danger btn-mini disabled DataTables_remove">Delete selected rows</a>');
-    });
+    disabled_actions = $('.dataTables_wrapper').find('.table').data('disabled-actions').split(' ');
+    if($.inArray('new', disabled_actions) < 0) {
+        datatables_actions += '<a href=' + window.location.pathname + "/new "  +  'class="btn btn-primary btn-mini DataTables_add">' +
+            'Add new ' + $('.dataTables_wrapper').find('.table').data('name').replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase() + '</a>';
+    }
+    if($.inArray('destroy', disabled_actions) < 0) {
+        datatables_actions += ' <a href="#" class="btn btn-danger btn-mini disabled DataTables_remove">Delete selected rows</a>';
+    }
+
+    $('.DataTables_actions').html(datatables_actions);
 
     $('.DataTables_remove').click(function(e) {
         e.preventDefault();
