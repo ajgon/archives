@@ -3,6 +3,7 @@ class AdminController < ApplicationController
 
   before_filter :fetch_resource, :only => [:edit, :update, :show, :destroy]
   before_filter :fetch_settings_paths, :only => [:index, :new, :edit, :show]
+  before_filter :redirect_disabled_actions, :except => [:create]
 
   def index
     @model = model
@@ -21,6 +22,7 @@ class AdminController < ApplicationController
   def create
     respond_to do |format| # Ugly hack I'm aware of it, but dataTables sends too long GET requests to do it in index
       format.html do
+        return if redirect_disabled_actions
         parse_params
         @resource = model.new(params[model.to_s.underscore])
 
@@ -31,6 +33,8 @@ class AdminController < ApplicationController
         end
       end
       format.json do
+        params[:action] = 'index'
+        return if redirect_disabled_actions
         render :json => dataTables_response_for(model)
       end
     end
@@ -76,6 +80,16 @@ class AdminController < ApplicationController
           :params => {:controller => controller.controller_path, :action => :index}
       }
     end
+  end
+
+  def redirect_disabled_actions
+    return if params[:controller] == 'admin/dashboard'
+    disabled_actions = model.admin_option_value(:disabled_actions)
+    if disabled_actions and disabled_actions.include?(params[:action].to_sym)
+      redirect_to :controller => 'admin/dashboard'
+      return true
+    end
+    return false
   end
 
   def model

@@ -29,7 +29,7 @@ class ::Item
 
   extend AdminBootstrap::ClassMethods::ActiveRecord
   include AdminBootstrap::InstanceMethods::ActiveRecord
-  class_attribute :_admin_columns
+  class_attribute :_admin_columns, :_admin_options
 
   def id
   end

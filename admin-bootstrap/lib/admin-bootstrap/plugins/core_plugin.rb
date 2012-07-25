@@ -29,4 +29,15 @@ class AdminBootstrap::Plugins::CorePlugin < AdminBootstrap::Plugins::Base
 
   end
 
+  # Admin options
+
+  # Hide protected rows
+  default :hide_protected_rows do |model|
+    if model.admin_option_value(:hide_protected_rows)
+      model.admin_columns.collect {|k, v| k if v[:protected] }.compact.each do |attribute|
+        model.admin_column attribute.to_sym, :visible => false
+      end
+    end
+  end
+
 end

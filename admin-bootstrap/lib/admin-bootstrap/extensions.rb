@@ -4,7 +4,7 @@ module ActiveRecord
     extend AdminBootstrap::ClassMethods::ActiveRecord
     include AdminBootstrap::InstanceMethods::ActiveRecord
 
-    class_attribute :_admin_columns
+    class_attribute :_admin_columns, :_admin_options
   end
 end
 
@@ -15,6 +15,7 @@ module FormtasticBootstrap
       include FormtasticBootstrap::Helpers::FieldsetWrapper if defined?(FormtasticBootstrap::Helpers::FieldsetWrapper)
 
       def fieldset_contents_from_column_list(columns)
+        columns -= model_name.constantize.column_names.map(&:to_sym)
         columns = (model_name.constantize.column_names(:admin => true).map(&:to_sym) + columns).uniq - Formtastic::Helpers::InputsHelper::SKIPPED_COLUMNS - [:id]
         columns.collect do |method|
           if @object
