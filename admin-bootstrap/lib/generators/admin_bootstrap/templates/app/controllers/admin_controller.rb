@@ -7,6 +7,13 @@ class AdminController < ApplicationController
 
   def index
     @model = model
+
+    respond_to do |format|
+      format.html
+      format.json do
+        render :json => dataTables_response_for(model)
+      end
+    end
   end
 
   def new
@@ -20,23 +27,14 @@ class AdminController < ApplicationController
   end
 
   def create
-    respond_to do |format| # Ugly hack I'm aware of it, but dataTables sends too long GET requests to do it in index
-      format.html do
-        return if redirect_disabled_actions
-        parse_params
-        @resource = model.new(params[model.to_s.underscore])
+    parse_params
 
-        if @resource.save
-          redirect_to({:action => :show, :id => @resource.id}, {:notice => "#{model.to_s} was successfully created!"})
-        else
-          render :new
-        end
-      end
-      format.json do
-        params[:action] = 'index'
-        return if redirect_disabled_actions
-        render :json => dataTables_response_for(model)
-      end
+    @resource = model.new(params[model.to_s.underscore])
+
+    if @resource.save
+      redirect_to({:action => :show, :id => @resource.id}, {:notice => "#{model.to_s} was successfully created!"})
+    else
+      render :new
     end
   end
 
