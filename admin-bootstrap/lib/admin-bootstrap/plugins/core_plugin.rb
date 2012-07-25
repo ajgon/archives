@@ -1,12 +1,11 @@
 class AdminBootstrap::Plugins::CorePlugin < AdminBootstrap::Plugins::Base
 
   option :visible do |value|
-    [ visibility_toggle(value) ]
+    set_visibility value
   end
 
   option :protected do |value|
-    result = []
-    result.push formtastic_parameters(:input_html => {:readonly => 'readonly', :disabled => 'disabled'}) if value
+    formtastic_parameters :input_html => {:readonly => 'readonly', :disabled => 'disabled'} if value
   end
 
   # Hide all binary columns

@@ -27,9 +27,9 @@ class AdminBootstrap::Plugins::Base
     @@options[name.to_sym] = block
   end
 
-  def self.call param, value, *args
+  def self.call model, column, param, value, *args
     if @@enabled and @@options[param.to_sym]
-      @@options[param.to_sym].call(value, *args)
+      @@options[param.to_sym].call(value, model, column, *args) || {}
     else
       {}
     end
