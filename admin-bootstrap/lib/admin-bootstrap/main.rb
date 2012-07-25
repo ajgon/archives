@@ -18,11 +18,10 @@ module AdminBootstrap
       end
 
       def admin_options
-        self._admin_options || {}
+        self._admin_options
       end
 
       def admin_columns
-        call_defaults unless self._admin_columns
         self._admin_columns
       end
 
@@ -53,6 +52,7 @@ module AdminBootstrap
       end
 
       def call_defaults
+        self._admin_options ||= {}
         self._admin_columns ||= {}
         AdminBootstrap::Plugins::Base.defaults.each_value do |callback|
           callback.call(self)
@@ -148,6 +148,10 @@ module AdminBootstrap
         else
           @attributes
         end
+      end
+
+      def call_defaults
+        self.class.call_defaults
       end
 
     end

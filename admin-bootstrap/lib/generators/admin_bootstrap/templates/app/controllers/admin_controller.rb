@@ -69,7 +69,7 @@ class AdminController < ApplicationController
   end
 
   def fetch_settings_paths
-    Dir.glob(File.join(Rails.root, 'app', 'controllers', 'admin', '*')).each do |controller_file|
+    Dir.glob(File.join(Rails.root, 'app', 'controllers', 'admin', '*.rb')).each do |controller_file|
       require controller_file
     end unless Rails.env == 'production'
     @settings_paths = (AdminController.subclasses - [Admin::DashboardController]).collect do |controller|
