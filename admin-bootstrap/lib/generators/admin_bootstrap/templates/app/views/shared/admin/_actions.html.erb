@@ -1,4 +1,4 @@
-<% links = [:edit, :show, :destroy] - Array(resource.class.admin_option_value(:disabled_actions)) %>
+<% links = [:edit, :show, :destroy] - Array(resource.class.admin_option_value(:disabled_actions)) + Array(resource.class.admin_option_value(:additional_actions)) %>
 <% if links.size > 0 %>
 <div class="btn-group DataTables_action">
     <%= link_to links.first.to_s.camelize, {:action => :links.first, :id => resource.id}.merge(links.first == :delete ? {:method => :delete} : {}), {:class => 'btn btn-primary'} %>
