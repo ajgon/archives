@@ -22,5 +22,6 @@ end
 
 # To use debugger
 # gem 'ruby-debug19', :require => 'ruby-debug'
+gem 'deep_merge'
 gem 'formtastic', '~> 2.1.0'
 gem 'formtastic-bootstrap', :git => 'https://github.com/ajgon/formtastic-bootstrap'

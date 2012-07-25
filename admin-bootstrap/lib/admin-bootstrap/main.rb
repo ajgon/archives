@@ -6,12 +6,14 @@ module AdminBootstrap
   module ClassMethods
     module ActiveRecord
 
-      def admin_column name, options
+      def admin_column name, options = nil
         if self.admin_columns.nil?
           self._admin_columns = {}
         else
           self._admin_columns = self._admin_columns.dup
         end
+
+        return admin_columns[name] || {} unless options
 
         if self._admin_columns[name.to_sym]
           self._admin_columns[name.to_sym] = self._admin_columns[name.to_sym].merge(options.symbolize_keys)
@@ -27,9 +29,9 @@ module AdminBootstrap
       end
 
       def admin_plugins for_column, filter = nil
-        plugins = Array(admin_columns[for_column.to_sym]).collect do |param, value|
-          AdminBootstrap::Plugins::Base.call(param, value)
-        end.flatten
+        plugins = Array(admin_column(for_column.to_sym)).collect do |param, value|
+          AdminBootstrap::Plugins::Base.call(self, for_column, param, value)
+        end
         if filter
           plugins = plugins.collect {|i| i[filter]}.compact
           plugin_item = plugins.first
@@ -38,7 +40,7 @@ module AdminBootstrap
           elsif plugin_item.is_a?(Array)
             plugins = plugins.inject(:+)
           elsif plugin_item.is_a?(Hash)
-            plugins = plugins.inject(:merge)
+            plugins = plugins.inject(:deep_merge)
           else
             plugins = plugins.inject(:+)
           end
@@ -60,9 +62,13 @@ module AdminBootstrap
           col
         end
         if options[:admin]
-          _columns = @columns.map {|c| c.name.to_sym}
+          _columns = @columns.map do |c|
+            admin_plugins(c.name.to_sym)
+            c.name.to_sym
+          end
           extra_columns = admin_columns.keys - _columns
           extra_columns.each do |extra_column|
+            admin_plugins extra_column
             extra_options = admin_columns[extra_column]
             _columns[_columns.index(extra_options[:after]) + 1, 0] = extra_column if extra_options[:after]
             _columns[_columns.index(extra_options[:before]), 0]    = extra_column if extra_options[:before]

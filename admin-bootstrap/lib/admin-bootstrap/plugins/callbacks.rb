@@ -8,7 +8,7 @@ module AdminBootstrap
       end
 
       # Visibility
-      def visibility_toggle value = false
+      def set_visibility value
         {:visibility => value}
       end
 
