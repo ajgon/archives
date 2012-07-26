@@ -1,5 +1,5 @@
 <div class="page-header">
-  <h1><%=  @model.to_s.pluralize.humanize %></h1>
+  <h1><%=  @model.to_s.gsub(/([a-z])([A-Z])/) {|m| "#{m[0]} #{m[1]}"}.pluralize.humanize %></h1>
 </div>
 <div class="row-fluid">
     <table class="table table-bordered table-striped table-data" data-name="<%= @model.to_s %>" data-disabled-actions="<%= Array(@model.admin_option_value(:disabled_actions)).join(' ') %>">

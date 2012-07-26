@@ -13,16 +13,17 @@
 
 var showFlash = function(code, message) {
     var alertBar = $('<div class="alert alert-' + code.toLowerCase() + ' fade in" data-dismiss="alert">' +
-                    message + '</div>');
+        message + '</div>');
     $('#flash').append(alertBar);
     alertBar.delay(3000).fadeOut(function() { $(this).remove(); });
 };
 
-var cleanForms = function() {
-    $('.control-group, .controls').addClass('row-fluid');
-    $('.control-label').addClass('span2');
-    $('.controls').addClass('span10');
-    $('.controls > input, .controls > textarea').addClass('span12');
+var cleanForms = function(parent, main) {
+    main = typeof(main) == 'undefined' ? true : main;
+    $('.control-group, .controls', parent).addClass('row-fluid');
+    $('.control-label', parent).addClass('span2');
+    $('.controls', parent).addClass(main ? 'span10' : 'span9');
+    $('.controls > input, .controls > textarea', parent).addClass('span12');
 };
 
 ResourceManager.register('all', function() {
@@ -34,8 +35,8 @@ ResourceManager.register('all', function() {
             }
         } catch(exception) {}
     }).ajaxError(function() {
-        showFlash('ERROR', 'An error has occurred! Please, try again later.');
-    });
+            showFlash('ERROR', 'An error has occurred! Please, try again later.');
+        });
 });
 
 
@@ -66,10 +67,10 @@ ResourceManager.register(['index'], function() {
             { "fnRender" : function(o, val) { return '<div>' + val + '</div>'; }, "aTargets": ['_all'] }
         ]
     }).dataTableCRUD({
-        "fnRowHighlighted": function(iRowsNum) {
-            $('.DataTables_remove').toggleClass('disabled', iRowsNum <= 0);
-        }
-    });
+            "fnRowHighlighted": function(iRowsNum) {
+                $('.DataTables_remove').toggleClass('disabled', iRowsNum <= 0);
+            }
+        });
 
     disabled_actions = $('.dataTables_wrapper').find('.table').data('disabled-actions').split(' ');
     if($.inArray('new', disabled_actions) < 0) {
@@ -126,9 +127,16 @@ ResourceManager.register(['new', 'edit'], function() {
     });
     $('input.time').timepicker({});
 
-    cleanForms();
+    cleanForms($('.editform'));
     $('.editform').delegate('.add_fields', 'click', function(e) {
-        cleanForms();
+        var self = $(this);
+        fieldsTimer = setInterval(function() {
+            if(nestedFieldsSize != self.parent().prevAll('.nested-fields').size()) {
+                clearInterval(fieldsTimer);
+                cleanForms(self.parent().prev(), false);
+                nestedFieldsSize = self.parent().prevAll('.nested-fields').size();
+            }
+        }, 10);
     });
 });
 
