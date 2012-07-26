@@ -1,5 +1,6 @@
 //= require jquery
 //= require jquery_ujs
+//= require cocoon
 //= require libraries/jquery.dataTables
 //= require libraries/jquery.numeric
 //= require libraries/jquery-ui.min
@@ -15,6 +16,13 @@ var showFlash = function(code, message) {
                     message + '</div>');
     $('#flash').append(alertBar);
     alertBar.delay(3000).fadeOut(function() { $(this).remove(); });
+};
+
+var cleanForms = function() {
+    $('.control-group, .controls').addClass('row-fluid');
+    $('.control-label').addClass('span2');
+    $('.controls').addClass('span10');
+    $('.controls > input, .controls > textarea').addClass('span12');
 };
 
 ResourceManager.register('all', function() {
@@ -109,6 +117,8 @@ ResourceManager.register(['show'], function() {
 
 // Validate forms
 ResourceManager.register(['new', 'edit'], function() {
+    var fieldsTimer, nestedFieldsSize = 0;
+
     $('[type="number"]').numeric();
 
     $('input.date').datepicker({
@@ -116,10 +126,10 @@ ResourceManager.register(['new', 'edit'], function() {
     });
     $('input.time').timepicker({});
 
-    $('.control-group, .controls').addClass('row-fluid');
-    $('.control-label').addClass('span2');
-    $('.controls').addClass('span10');
-    $('.controls > input, .controls > textarea').addClass('span12');
+    cleanForms();
+    $('.editform').delegate('.add_fields', 'click', function(e) {
+        cleanForms();
+    });
 });
 
 

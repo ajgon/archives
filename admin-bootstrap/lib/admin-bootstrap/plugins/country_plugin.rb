@@ -251,7 +251,11 @@ class AdminBootstrap::Plugins::CountryPlugin < AdminBootstrap::Plugins::Base
                :Zimbabwe                                       => 'ZW'}
 
   option :country do |value|
-    formtastic_parameters(:as => :select, :collection => COUNTRIES) if value
+    if value
+      codes = value[:codes].nil? ? true : codes
+      collection = codes ? COUNTRIES : COUNTRIES.keys
+      formtastic_parameters(:as => :select, :collection => collection)
+    end
   end
 
 end

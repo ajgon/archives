@@ -25,3 +25,4 @@ end
 gem 'deep_merge'
 gem 'formtastic', '~> 2.1.0'
 gem 'formtastic-bootstrap', :git => 'https://github.com/ajgon/formtastic-bootstrap'
+gem 'cocoon'

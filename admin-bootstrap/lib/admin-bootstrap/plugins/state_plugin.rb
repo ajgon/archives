@@ -73,12 +73,17 @@ class AdminBootstrap::Plugins::StatePlugin < AdminBootstrap::Plugins::Base
   }
 
   option :state do |value|
-    if STATES.keys.include?(value.to_s.upcase.to_sym)
-      collection = STATES[value.to_s.upcase.to_sym]
-    else
-      collection = STATES.values.inject(:merge)
+    if value
+      country = value[:country].to_s.upcase.to_sym
+      codes = value[:codes].nil? ? true : codes
+      if STATES.keys.include?(country)
+        collection = STATES[country]
+      else
+        collection = STATES.values.inject(:merge)
+      end
+      collection = collection.keys unless codes
+      formtastic_parameters(:as => :select, :collection => collection) if value
     end
-    formtastic_parameters(:as => :select, :collection => collection) if value
   end
 
 end
