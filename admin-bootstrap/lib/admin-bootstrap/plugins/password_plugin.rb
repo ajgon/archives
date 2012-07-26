@@ -6,5 +6,4 @@ class AdminBootstrap::Plugins::PasswordPlugin < AdminBootstrap::Plugins::Base
     formtastic_parameters(:input_html => {:type => 'password'}) if value
   end
 
-
 end
