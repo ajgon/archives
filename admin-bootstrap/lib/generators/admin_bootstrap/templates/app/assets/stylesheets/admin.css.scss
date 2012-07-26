@@ -132,7 +132,7 @@ table.table {
 .showitem {
   max-width: 1260px;
   margin: 0 auto;
-  h1 {
+  h1, h2, h3 {
     margin-bottom: 20px;
   }
 }
@@ -151,4 +151,18 @@ table.table {
   :hover a {
     display: block;
   }
+}
+
+.nested-fields {
+  clear: left;
+  position: relative;
+  .btn-danger {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}
+
+.cocoon-links {
+  margin-bottom: 20px;
 }

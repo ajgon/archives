@@ -1,7 +1,7 @@
 .showitem.row-fluid
   %h1.span12 #{@resource.class.name.underscore.humanize} record
   %dl.dl-horizontal.span12
-    - @resource.admin_attributes.each do |key, value|
+    - @resource.attributes(:admin => true).each do |key, value|
       %dt #{key.humanize}
       %dd
         - if @resource.class.admin_columns[key.to_sym] and @resource.class.admin_columns[key.to_sym][:wysiwyg] === true

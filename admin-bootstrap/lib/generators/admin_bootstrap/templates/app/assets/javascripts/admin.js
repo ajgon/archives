@@ -1,5 +1,6 @@
 //= require jquery
 //= require jquery_ujs
+//= require cocoon
 //= require libraries/jquery.dataTables
 //= require libraries/jquery.numeric
 //= require libraries/jquery-ui.min
@@ -15,6 +16,13 @@ var showFlash = function(code, message) {
                     message + '</div>');
     $('#flash').append(alertBar);
     alertBar.delay(3000).fadeOut(function() { $(this).remove(); });
+};
+
+var cleanForms = function() {
+    $('.control-group, .controls').addClass('row-fluid');
+    $('.control-label').addClass('span2');
+    $('.controls').addClass('span10');
+    $('.controls > input, .controls > textarea').addClass('span12');
 };
 
 ResourceManager.register('all', function() {
@@ -38,6 +46,9 @@ ResourceManager.register(['index'], function() {
 
 // Fetch dataTables
 ResourceManager.register(['index'], function() {
+    var datatables_actions = '',
+        disabled_actions;
+
     $.extend( $.fn.dataTableExt.oStdClasses, {
         "sWrapper": "dataTables_wrapper form-inline"
     } );
@@ -45,7 +56,6 @@ ResourceManager.register(['index'], function() {
     $('.table-data').dataTable( {
         "bProcessing": true,
         "bServerSide": true,
-        "sServerMethod": "POST",
         "sDom": "<'row-fluid'<'span2'l><'DataTables_actions span4'><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
         "sAjaxSource": window.location.pathname.replace(/\/$/, '') + '.json',
         "sPaginationType": "bootstrap",
@@ -61,12 +71,16 @@ ResourceManager.register(['index'], function() {
         }
     });
 
-    $('.DataTables_actions').each(function() {
-        $(this).html(
-            '<a href=' + window.location.pathname + "/new "  +  'class="btn btn-primary btn-mini DataTables_add">' +
-             'Add new ' + $(this).closest('.dataTables_wrapper').find('.table').data('name').toLowerCase() + '</a>' +
-             ' <a href="#" class="btn btn-danger btn-mini disabled DataTables_remove">Delete selected rows</a>');
-    });
+    disabled_actions = $('.dataTables_wrapper').find('.table').data('disabled-actions').split(' ');
+    if($.inArray('new', disabled_actions) < 0) {
+        datatables_actions += '<a href=' + window.location.pathname + "/new "  +  'class="btn btn-primary btn-mini DataTables_add">' +
+            'Add new ' + $('.dataTables_wrapper').find('.table').data('name').replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase() + '</a>';
+    }
+    if($.inArray('destroy', disabled_actions) < 0) {
+        datatables_actions += ' <a href="#" class="btn btn-danger btn-mini disabled DataTables_remove">Delete selected rows</a>';
+    }
+
+    $('.DataTables_actions').html(datatables_actions);
 
     $('.DataTables_remove').click(function(e) {
         e.preventDefault();
@@ -103,6 +117,8 @@ ResourceManager.register(['show'], function() {
 
 // Validate forms
 ResourceManager.register(['new', 'edit'], function() {
+    var fieldsTimer, nestedFieldsSize = 0;
+
     $('[type="number"]').numeric();
 
     $('input.date').datepicker({
@@ -110,10 +126,10 @@ ResourceManager.register(['new', 'edit'], function() {
     });
     $('input.time').timepicker({});
 
-    $('.control-group, .controls').addClass('row-fluid');
-    $('.control-label').addClass('span2');
-    $('.controls').addClass('span10');
-    $('.controls > input, .controls > textarea').addClass('span12');
+    cleanForms();
+    $('.editform').delegate('.add_fields', 'click', function(e) {
+        cleanForms();
+    });
 });
 
 
