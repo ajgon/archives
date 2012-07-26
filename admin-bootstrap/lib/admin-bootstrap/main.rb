@@ -120,6 +120,18 @@ module AdminBootstrap
         end
       end
 
+      def nested_tables
+        reflect_on_all_associations.find_all do |reflection|
+          nested_attributes_options.keys.include?(reflection.table_name.to_sym) and reflection.macro == :has_many and reflect_on_association(reflection.table_name.to_sym)
+        end.collect do |reflection|
+          reflection.table_name.to_sym
+        end.uniq
+      end
+
+      def admin_nested_tables
+        nested_tables - Array(admin_option_value(:disable_nested))
+      end
+
       private
       def set_admin_param param, name, options = nil
         if self.__send__(param).nil?

@@ -15,8 +15,9 @@ module FormtasticBootstrap
       include FormtasticBootstrap::Helpers::FieldsetWrapper if defined?(FormtasticBootstrap::Helpers::FieldsetWrapper)
 
       def fieldset_contents_from_column_list(columns)
-        columns -= model_name.constantize.column_names.map(&:to_sym)
-        columns = (model_name.constantize.column_names(:admin => true).map(&:to_sym) + columns).uniq - Formtastic::Helpers::InputsHelper::SKIPPED_COLUMNS - [:id]
+        model = model_name.gsub(/^.*\[|\]+$/, '').classify.constantize
+        columns -= model.column_names.map(&:to_sym)
+        columns = (model.column_names(:admin => true).map(&:to_sym) + columns).uniq - Formtastic::Helpers::InputsHelper::SKIPPED_COLUMNS - [:id]
         columns.collect do |method|
           if @object
             if @object.class.respond_to?(:reflect_on_association)
@@ -29,9 +30,9 @@ module FormtasticBootstrap
               end
             end
           end
-          visibility = model_name.constantize.admin_plugins(method.to_sym, :visibility)
-          unless !visibility.nil? and visibility === false and model_name.constantize.columns.find {|c| c.name == method.to_s}.null
-            formtastic_parameters = model_name.constantize.admin_plugins(method.to_sym, :formtastic_parameters) || {}
+          visibility = model.admin_plugins(method.to_sym, :visibility)
+          unless !visibility.nil? and visibility === false and model.columns.find {|c| c.name == method.to_s}.null
+            formtastic_parameters = model.admin_plugins(method.to_sym, :formtastic_parameters) || {}
             [:input_html, :wrapper_html].each do |fp|
               formtastic_parameters_table = (formtastic_parameters[fp] || {}).map do |k, v|
                 begin

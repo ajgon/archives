@@ -8,6 +8,10 @@ class AdminBootstrap::Plugins::CorePlugin < AdminBootstrap::Plugins::Base
     formtastic_parameters :input_html => {:readonly => 'readonly', :disabled => 'disabled'} if value
   end
 
+  option :hidden do |value|
+    formtastic_parameters :input_html => {:type => :hidden}, :wrapper_html => {:style => 'display: none;'}
+  end
+
   # Hide all binary columns
   default :serve_the_public_trust do |model|
     model.columns.find_all do |column|
@@ -24,9 +28,11 @@ class AdminBootstrap::Plugins::CorePlugin < AdminBootstrap::Plugins::Base
     end
   end
 
-  # Yeah, yeah, I know ;-)
+  # Hide all referential (*_id) columns
   default :uphold_the_law do |model|
-
+    model.reflect_on_all_associations.collect(&:association_foreign_key).uniq.each do |attribute|
+      model.admin_column attribute.to_sym, :hidden => true
+    end
   end
 
   # Admin options
