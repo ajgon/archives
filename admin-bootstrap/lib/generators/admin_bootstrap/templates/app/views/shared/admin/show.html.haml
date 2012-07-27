@@ -1,20 +1,26 @@
 .showitem.row-fluid
-  %h1.span12 #{@resource.class.name.underscore.humanize} record
-  %dl.dl-horizontal.span12
-    - @resource.attributes(:admin => true).each do |key, value|
-      %dt #{key.humanize}
-      %dd
-        - if @resource.class.admin_columns[key.to_sym] and @resource.class.admin_columns[key.to_sym][:wysiwyg] === true
-          .wysiwyg.row-fluid
-            .raw.well.span10
-              #{raw(value)}
-              - unless @resource.class.admin_columns[key.to_sym] and @resource.class.admin_columns[key.to_sym][:showsource] === false
-                %a.label.label-info{:href => '#'} Show source
-            .code.span10
-              %pre.prettyprint.linenums #{value}
-              %a.label.label-info{:href => '#'} Show preview
-        - else
-          =value
+  %h1.span10.offset2 #{@resource.class.name.underscore.humanize} record
+  %table.table.table-bordered.table-striped.offset2.span10
+    %thead
+      %tr
+        %th Field
+        %th Value
+    %tbody
+      - @resource.attributes(:admin => true).each do |key, value|
+        %tr
+          %td #{key.humanize}
+          %td
+            - if @resource.class.admin_columns[key.to_sym] and @resource.class.admin_columns[key.to_sym][:wysiwyg] === true
+              .wysiwyg.row-fluid
+                .raw.well
+                  #{raw(value)}
+                  - unless @resource.class.admin_columns[key.to_sym] and @resource.class.admin_columns[key.to_sym][:showsource] === false
+                    %a.label.label-info{:href => '#'} Show source
+                .code
+                  %pre.prettyprint.linenums #{value}
+                  %a.label.label-info{:href => '#'} Show preview
+            - else
+              =value
 .showitem
   .form-actions
     %a.btn{:href => url_for(:action => :index)} Back

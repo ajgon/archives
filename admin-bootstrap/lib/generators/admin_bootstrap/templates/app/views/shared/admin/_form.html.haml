@@ -1,7 +1,7 @@
 = tinymce
 = f.inputs :except => {:type => :binary}
 
-- @resource.class.admin_nested_tables.each do |field|
+- f.object.class.admin_nested_tables.each do |field|
   %h2.offset2.span10 #{field.to_s.humanize}
   = f.semantic_fields_for field do |item|
     = render 'subform_fields', :f => item

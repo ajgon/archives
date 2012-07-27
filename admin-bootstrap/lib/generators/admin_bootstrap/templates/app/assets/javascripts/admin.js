@@ -26,7 +26,7 @@ var cleanForms = function(parent, main) {
     $('.controls > input, .controls > textarea', parent).addClass('span12');
 };
 
-ResourceManager.register('all', function() {
+ResourceManager.register(function() {
     $('#flash').ajaxSuccess(function(e, xhr, settings) {
         try {
             var response = $.parseJSON(xhr.responseText);
@@ -41,12 +41,12 @@ ResourceManager.register('all', function() {
 
 
 // Show tooltips
-ResourceManager.register(['index'], function() {
+ResourceManager.register({only: ['index']}, function() {
     $('a[rel="tooltip"]').tooltip();
 });
 
 // Fetch dataTables
-ResourceManager.register(['index'], function() {
+ResourceManager.register({only: ['index']}, function() {
     var datatables_actions = '',
         disabled_actions;
 
@@ -105,7 +105,7 @@ ResourceManager.register(['index'], function() {
 });
 
 // Enable google prettify
-ResourceManager.register(['show'], function() {
+ResourceManager.register({only: ['show']}, function() {
     prettyPrint();
     $('.wysiwyg .code').hide();
     if($('.wysiwyg .raw a').size()) {
@@ -117,7 +117,7 @@ ResourceManager.register(['show'], function() {
 });
 
 // Validate forms
-ResourceManager.register(['new', 'edit'], function() {
+ResourceManager.register({except: ['index', 'show']}, function() {
     var fieldsTimer, nestedFieldsSize = 0;
 
     $('[type="number"]').numeric();

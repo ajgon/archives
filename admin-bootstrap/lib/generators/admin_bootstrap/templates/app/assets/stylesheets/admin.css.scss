@@ -50,6 +50,7 @@ div.DataTables_action {
 table.table {
   margin-bottom: 6px;
   clear: both;
+  display: table !important;
   thead {
     .sort {
       cursor: pointer;
