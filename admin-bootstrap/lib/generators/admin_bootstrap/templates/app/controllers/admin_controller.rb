@@ -69,10 +69,7 @@ class AdminController < ApplicationController
   end
 
   def fetch_settings_paths
-    Dir.glob(File.join(Rails.root, 'app', 'controllers', 'admin', '*.rb')).each do |controller_file|
-      require controller_file
-    end unless Rails.env == 'production'
-    @settings_paths = (AdminController.subclasses - [Admin::DashboardController]).collect do |controller|
+    @settings_paths = (admin_controllers).collect do |controller|
       {
           :name => controller.controller_name.humanize,
           :params => {:controller => controller.controller_path, :action => :index}
@@ -82,8 +79,8 @@ class AdminController < ApplicationController
 
   def redirect_disabled_actions
     return if params[:controller] == 'admin/dashboard'
-    disabled_actions = model.admin_option_value(:disabled_actions)
-    if disabled_actions and disabled_actions.include?(params[:action].to_sym)
+    disabled_actions = model.admin_options[:disabled_actions]
+    if disabled_actions and disabled_actions[:enabled] and disabled_actions[:value].include?(params[:action].to_sym)
       redirect_to :controller => 'admin/dashboard'
       return true
     end
@@ -91,11 +88,7 @@ class AdminController < ApplicationController
   end
 
   def model
-    begin
-      return File.basename(self.class.to_s.underscore).gsub(/_controller$/, '').classify.constantize
-    rescue NameError
-      return false
-    end
+    model_for self.class
   end
 
   def parse_params

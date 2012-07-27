@@ -36,4 +36,25 @@ module AdminHelper
         :aaData => data
     }
   end
+
+  def admin_controllers
+    Rails.application.routes.routes.collect do |route|
+      route.defaults[:controller] if route.defaults[:controller].to_s.match(/^admin\//) and
+          route.defaults[:action].to_s == 'index'
+    end.compact.uniq.collect do |route|
+      "#{route}_controller".classify.constantize
+    end
+  end
+
+  def model_for controller_class
+    begin
+      return File.basename(controller_class.to_s.underscore).gsub(/_controller$/, '').classify.constantize
+    rescue NameError
+      return false
+    end
+  end
+
+  def humanize name
+    name.to_s.gsub(/([a-z])([A-Z])/) {|m| "#{m[0]} #{m[1]}"}.pluralize.humanize
+  end
 end
