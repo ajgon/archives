@@ -74,6 +74,7 @@ class AdminBootstrap::Plugins::StatePlugin < AdminBootstrap::Plugins::Base
 
   option :state do |value|
     if value
+      value = {:country => value} unless value.kind_of?(Hash)
       country = value[:country].to_s.upcase.to_sym
       codes = value[:codes].nil? ? true : codes
       if STATES.keys.include?(country)
