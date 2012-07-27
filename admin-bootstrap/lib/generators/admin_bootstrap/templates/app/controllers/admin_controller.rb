@@ -99,7 +99,10 @@ class AdminController < ApplicationController
   end
 
   def parse_params
-    params[model.to_s.underscore] = HashWithIndifferentAccess.new(Hash[*params[model.to_s.underscore].collect {|k,v| [k,(v.is_a?(Hash) ? v[:date] + ' ' + v[:time] : v)]}.flatten])
+    hash = params[model.to_s.underscore].collect do |k,v|
+      [ k, ( (v.is_a?(Hash) and v.size == 2 and v[:date] and v[:time]) ? v[:date] + ' ' + v[:time] : v) ]
+    end.flatten
+    params[model.to_s.underscore] = HashWithIndifferentAccess.new(Hash[*hash])
   end
 
 end
