@@ -1,8 +1,8 @@
 class AdminController < ApplicationController
   include AdminHelper
 
-  before_filter :fetch_resource, :only => [:edit, :update, :show, :destroy]
-  before_filter :fetch_settings_paths, :only => [:index, :new, :edit, :show]
+  before_filter :fetch_resource, :except => [:create, :new, :index]
+  before_filter :fetch_settings_paths, :except => [:destroy]
   before_filter :redirect_disabled_actions, :except => [:create]
 
   def index

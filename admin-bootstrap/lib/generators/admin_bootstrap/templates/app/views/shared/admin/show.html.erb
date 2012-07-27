@@ -1,28 +1,38 @@
 <div class="showitem row-fluid">
     <h1 class="span12"><%= @resource.class.name.underscore.humanize %> record</h1>
-    <dl class="dl-horizontal span12">
+    <table class="table table-bordered table-striped offset 2 span10">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
 <% @resource.attributes(:admin => true).each do |key, value| %>
-        <dt><%= key.humanize %></dt>
-        <dd>
+        <tr>
+            <td><%= key.humanize %></td>
+            <td>
 <%   if @resource.class.admin_columns[key.to_sym] and @resource.class.admin_columns[key.to_sym][:wysiwyg] === true %>
-            <div class="wysiwyg row-fluid">
-                <div class="raw well span10">
-                    <%= raw(value) %>
+                <div class="wysiwyg row-fluid">
+                    <div class="raw well">
+                        <%= raw(value) %>
 <%     unless @resource.class.admin_columns[key.to_sym] and @resource.class.admin_columns[key.to_sym][:showsource] === false %>
-                    <a href="#" class="label label-info">Show source</a>
+                        <a href="#" class="label label-info">Show source</a>
 <%     end %>
-                </div>
-                <div class="code span10">
-                    <pre class="prettyprint linenums"><%= value %></pre>
+                    </div>
+                    <div class="code">
+                        <pre class="prettyprint linenums"><%= value %></pre>
                     <a href="#" class="label label-info">Show preview</a>
+                    </div>
                 </div>
-            </div>
 <%   else %>
-            <%= value %>
+                <%= value %>
 <%   end %>
-        </dd>
+            </td>
+        </tr>
 <% end %>
-    </dl>
+      </tbody>
+    </table>
 </div>
 <div class="showitem">
     <div class="form-actions">

@@ -1,32 +1,42 @@
 var ResourceManager = {
-    _index: [],
-    _show: [],
-    _new: [],
-    _create: [],
-    _edit: [],
-    _update: [],
-    _destroy: [],
+    resources: [],
 
     register: function(resources, callback) {
         var i;
-        if(resources == 'all') {
-            resources = ['index', 'show', 'new', 'create', 'edit', 'update', 'destroy'];
+        if(typeof(resources) == 'function') {
+            callback = resources;
+            resources = {};
         }
         if(typeof(resources) == 'string') {
-            resources = [resources];
+            resources = {only: [resources]};
         }
         if(resources instanceof Array) {
-            for(i = 0; i < resources.length; i++) {
-                this['_' + resources[i]].push(callback);
-            }
+            resources = {only: resources};
         }
+        if(resources.only && typeof(resources.only) == 'string') {
+            resources.only = [resources.only];
+        }
+        if(resources.except && typeof(resources.except) == 'string') {
+            resources.except = [resources.except];
+        }
+        resources.callback = callback;
+        this.resources.push(resources);
     },
 
     launch: function(resource) {
-        var i;
-        for(i in this['_' + resource]) {
-            if(this['_' + resource].hasOwnProperty(i)) {
-                this['_' + resource][i]();
+        var i, res_len = this.resources.length;
+
+        for(i = 0; i < res_len; i++) {
+            if(this.resources[i].only) {
+                if($.inArray(resource, this.resources[i].only) > -1) {
+                    this.resources[i].callback();
+                }
+            } else if(this.resources[i].except) {
+                if($.inArray(resource, this.resources[i].except) == -1) {
+                    this.resources[i].callback();
+                }
+            } else {
+                this.resources[i].callback();
             }
         }
     }
