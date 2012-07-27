@@ -24,6 +24,12 @@ var cleanForms = function(parent, main) {
     $('.control-label', parent).addClass('span2');
     $('.controls', parent).addClass(main ? 'span10' : 'span9');
     $('.controls > input, .controls > textarea', parent).addClass('span12');
+    $('[type="number"]', parent).numeric();
+
+    $('input.date', parent).datepicker({
+        dateFormat: 'yy-mm-dd'
+    });
+    $('input.time', parent).timepicker({});
 };
 
 ResourceManager.register(function() {
@@ -47,6 +53,9 @@ ResourceManager.register({only: ['index']}, function() {
 
 // Fetch dataTables
 ResourceManager.register({only: ['index']}, function() {
+    if($('#dashboard').size() > 0) {
+        return;
+    }
     var datatables_actions = '',
         disabled_actions;
 
@@ -120,13 +129,6 @@ ResourceManager.register({only: ['show']}, function() {
 ResourceManager.register({except: ['index', 'show']}, function() {
     var fieldsTimer, nestedFieldsSize = 0;
 
-    $('[type="number"]').numeric();
-
-    $('input.date').datepicker({
-        dateFormat: 'yy-mm-dd'
-    });
-    $('input.time').timepicker({});
-
     cleanForms($('.editform'));
     $('.editform').delegate('.add_fields', 'click', function(e) {
         var self = $(this);
@@ -138,6 +140,17 @@ ResourceManager.register({except: ['index', 'show']}, function() {
             }
         }, 10);
     });
+});
+
+// Dashboard stuff
+ResourceManager.register({only: ['index']}, function() {
+    if($('#dashboard').size()) {
+        $('tbody tr').click(function(e) {
+            if($(this).data('url')) {
+                window.location.href = $(this).data('url');
+            }
+        });
+    }
 });
 
 
