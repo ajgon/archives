@@ -1,3 +1,6 @@
+require 'admin-bootstrap/data_table'
+require 'admin-bootstrap/options'
+
 module AdminBootstrap
 
   module Plugins
@@ -5,6 +8,10 @@ module AdminBootstrap
 
   module ClassMethods
     module ActiveRecord
+
+      def admin &block
+        self._admin_columns, self._admin_options = AdminBootstrap::Options.parse(&block)
+      end
 
       def admin_option name, options = {}
         options = {:enabled => true, :value => options}
@@ -79,7 +86,7 @@ module AdminBootstrap
             _columns[_columns.index(extra_options[:replace])]      = extra_column if extra_options[:replace]
           end
           _columns = _columns - admin_columns.collect {|k, v| k if v[:visible] === false}.compact
-          _columns = Array(admin_option_value(:admin_columns_order)) | _columns if admin_option_value(:admin_columns_order)
+          _columns = Array(admin_option_value(:columns_order)) | _columns if admin_option_value(:columns_order)
           @columns_admin ||= _columns.collect do |admin_column|
             @columns.find {|column| column.name == admin_column.to_s} || @columns.first.class.new(admin_column.to_s, nil, 'string', true)
           end

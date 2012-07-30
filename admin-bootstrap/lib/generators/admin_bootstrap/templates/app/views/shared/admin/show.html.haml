@@ -7,6 +7,7 @@
         %th Value
     %tbody
       - @resource.attributes(:admin => true).each do |key, value|
+      - value = raw(admin_parse_value(@resource, key))
         %tr
           %td #{key.humanize}
           %td

@@ -18,8 +18,8 @@
             <tbody>
               <% model_for(controller).last(5).each do |item| %>
                 <tr data-id="<%= item.id %>" data-url="<%= polymorphic_path(item, :action => 'admin') %>">
-                  <% item.attributes(:admin => true).values[0..3].each do |attr| %>
-                    <td><%= attr.to_s %></td>
+                  <% item.attributes(:admin => true).keys[0..3].each do |key| %>
+                    <td><%= raw(admin_parse_value(item, key)) %></td>
                   <% end %>
                 </tr>
               <% end %>

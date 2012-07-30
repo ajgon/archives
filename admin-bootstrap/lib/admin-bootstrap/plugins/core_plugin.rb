@@ -9,7 +9,12 @@ class AdminBootstrap::Plugins::CorePlugin < AdminBootstrap::Plugins::Base
   end
 
   option :hidden do |value|
-    formtastic_parameters :input_html => {:type => :hidden}, :wrapper_html => {:style => 'display: none;'}
+    formtastic_parameters :input_html => {:type => :hidden}, :wrapper_html => {:style => 'display: none;'} if value
+  end
+
+  option :image do |value, model, column|
+    model.admin_column column, :class => 'image',
+                               :value => lambda {|v| "<img src=\"#{v.sub(/original/, 'admin_bootstrap')}\" />" }
   end
 
   # Hide all binary columns

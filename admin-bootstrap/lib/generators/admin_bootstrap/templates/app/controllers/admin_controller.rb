@@ -11,7 +11,7 @@ class AdminController < ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render :json => dataTables_response_for(model)
+        render :json => AdminBootstrap::DataTable.new(model, params)
       end
     end
   end
