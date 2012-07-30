@@ -10,8 +10,9 @@ class AdminBootstrap::Plugins::PaperclipPlugin < AdminBootstrap::Plugins::Base
     if value
       attachment = model.attachment_definitions[column]
       if attachment
-        model.admin_column column, :after => ((column = column.to_s) + '_updated_at').to_sym
-        attachment[:styles] = (attachment[:styles] || {}).merge(:admin_bootstrap => '75x75^')
+        model.admin_column column, :after => ((column = column.to_s) + '_updated_at').to_sym,
+                                   :image => true
+        attachment[:styles] = (attachment[:styles] || {}).merge(:admin_bootstrap => '75x75')
         model.has_attached_file column, attachment
         [column + '_file_name',
          column + '_content_type',
@@ -20,7 +21,7 @@ class AdminBootstrap::Plugins::PaperclipPlugin < AdminBootstrap::Plugins::Base
           model.admin_column attr.to_sym, :visible => false
         end
       end
-      formtastic_parameters :as => :file, :input_html => {'data-url' => "@object.#{column}.url(:admin_bootstrap)"}
+      formtastic_parameters :as => :file
     end
   end
 

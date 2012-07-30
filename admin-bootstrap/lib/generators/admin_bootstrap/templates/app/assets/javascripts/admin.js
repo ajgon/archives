@@ -72,9 +72,25 @@ ResourceManager.register({only: ['index']}, function() {
         'iDisplayLength': 20,
         "aLengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
         "aoColumnDefs": [
-            { "bSortable": false, "bSearchable": false, "aTargets": [-1] },
-            { "fnRender" : function(o, val) { return '<div>' + val + '</div>'; }, "aTargets": ['_all'] }
-        ]
+            { "bSortable": false, "bSearchable": false, "aTargets": [-1] }
+            //{ "fnRender" : function(o, val) { return '<div>' + val + '</div>'; }, "aTargets": ['_all'] }
+        ],
+        "fnServerData": function ( sSource, aoData, fnCallback ) {
+            $.ajax( {
+                "dataType": 'json',
+                "url": sSource,
+                "data": aoData,
+                "success": function(data, textStatus, jqXHR) {
+                    fnCallback(data, textStatus, jqXHR);
+                    $('.image').each(function() {
+                        $(this).popover({
+                            content: '<img src="' + $(this).data('value') + '" />',
+                            placement: 'bottom'
+                        });
+                    });
+                }
+            } );
+        }
     }).dataTableCRUD({
             "fnRowHighlighted": function(iRowsNum) {
                 $('.DataTables_remove').toggleClass('disabled', iRowsNum <= 0);
@@ -123,6 +139,12 @@ ResourceManager.register({only: ['show']}, function() {
             $(this).closest('.wysiwyg').find('.code, .raw').toggle();
         });
     }
+    $('.image').each(function() {
+        $(this).popover({
+            content: '<img src="' + $(this).data('value') + '" />',
+            placement: 'left'
+        });
+    });
 });
 
 // Validate forms

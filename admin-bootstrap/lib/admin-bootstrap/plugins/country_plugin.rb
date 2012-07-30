@@ -252,7 +252,7 @@ class AdminBootstrap::Plugins::CountryPlugin < AdminBootstrap::Plugins::Base
 
   option :country do |value|
     if value
-      codes = value[:codes].nil? ? true : codes
+      codes = !value.kind_of?(Hash) or value[:codes].nil? ? true : codes
       collection = codes ? COUNTRIES : COUNTRIES.keys
       formtastic_parameters(:as => :select, :collection => collection)
     end
