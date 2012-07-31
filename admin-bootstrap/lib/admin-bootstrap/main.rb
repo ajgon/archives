@@ -62,7 +62,7 @@ module AdminBootstrap
         self._admin_options ||= {}
         self._admin_columns ||= {}
         AdminBootstrap::Plugins::Base.defaults.each_value do |callback|
-          callback.call(self)
+          callback.call(self) if self.table_exists?
         end
       end
 
