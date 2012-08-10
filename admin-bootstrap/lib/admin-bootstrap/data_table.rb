@@ -9,16 +9,17 @@ module AdminBootstrap
       @params = params
       @behaviour = {}
       @results = nil
-      @data = data &block
 
       search
       sort
       pagination
+
+      @data = data &block
     end
 
     def search
       unless @params[:sSearch].blank?
-        @behaviour[:conditions] = "`" + columns.join("` LIKE '%#{@params[:sSearch]}%' OR `") + "` LIKE '%#{@params[:sSearch]}%'"
+        @behaviour[:conditions] = "`" + (@columns && @model.column_names).join("` LIKE '%#{@params[:sSearch]}%' OR `") + "` LIKE '%#{@params[:sSearch]}%'"
       end
     end
 
@@ -76,8 +77,8 @@ module AdminBootstrap
       end
 
       @data = {
-          :iTotalRecords => count,
-          :iTotalDisplayRecords => total,
+          :iTotalRecords => total,
+          :iTotalDisplayRecords => count,
           :sEcho => @params[:sEcho],
           :aaData => data
       }
