@@ -15,11 +15,20 @@ module AdminBootstrap
       pagination
 
       @data = data &block
+
+      case ActiveRecord::Base.connection_config[:adapter]
+        when 'mysql', 'mysql2'
+          @column_escape = '`'
+        when 'postgresql'
+          @column_escape = '"'
+        else
+          @column_escape = ''
+      end
     end
 
     def search
       unless @params[:sSearch].blank?
-        @behaviour[:conditions] = "`" + (@columns && @model.column_names).join("` LIKE '%#{@params[:sSearch]}%' OR `") + "` LIKE '%#{@params[:sSearch]}%'"
+        @behaviour[:conditions] = @column_escape + (@columns && @model.column_names).join("#{@column_escape} LIKE '%#{@params[:sSearch]}%' OR #{@column_escape}") + "#{@column_escape} LIKE '%#{@params[:sSearch]}%'"
       end
     end
 
@@ -30,7 +39,7 @@ module AdminBootstrap
           i = i.to_s
           order_column = @columns[@params[('iSortCol_' + i)].to_i]
           order_type = @params[('sSortDir_' + i)] == 'desc' ? 'DESC' : 'ASC'
-          order.push "`#{order_column}` #{order_type}" unless order_column.blank?
+          order.push "#{@column_escape}#{order_column}#{@column_escape} #{order_type}" unless order_column.blank?
         end
         @behaviour[:order] = order.join(', ') unless order.blank?
       end
