@@ -8,6 +8,7 @@
 //= require libraries/bootstrap
 //= require libraries/prettify
 //= require libraries/resourceManager
+//= require_tree admin/plugins
 
 // AJAX handlers
 
