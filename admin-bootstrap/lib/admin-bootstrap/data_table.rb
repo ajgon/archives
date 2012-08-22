@@ -10,12 +10,6 @@ module AdminBootstrap
       @behaviour = {}
       @results = nil
 
-      search
-      sort
-      pagination
-
-      @data = data &block
-
       case ActiveRecord::Base.connection_config[:adapter]
         when 'mysql', 'mysql2'
           @column_escape = '`'
@@ -24,6 +18,12 @@ module AdminBootstrap
         else
           @column_escape = ''
       end
+
+      search
+      sort
+      pagination
+
+      @data = data &block
     end
 
     def search
