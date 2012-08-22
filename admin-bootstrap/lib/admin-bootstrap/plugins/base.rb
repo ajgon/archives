@@ -4,6 +4,7 @@ class AdminBootstrap::Plugins::Base
   @@options = {}
   @@inputs = {}
   @@defaults = {}
+  @@ajax = {}
 
   @@enabled = true
 
@@ -25,6 +26,14 @@ class AdminBootstrap::Plugins::Base
 
   def self.option name, &block
     @@options[name.to_sym] = block
+  end
+
+  def self.ajax name, &block
+    @@ajax[name.to_sym] = block
+  end
+
+  def self.ajax_call name, params
+    @@ajax[name.to_sym].call(params) if @@ajax[name.to_sym]
   end
 
   def self.call model, column, param, value, *args

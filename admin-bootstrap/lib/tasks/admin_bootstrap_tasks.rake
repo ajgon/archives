@@ -6,9 +6,11 @@ class AdminBootstrapTask
                  app/assets/javascripts/admin.js
                  app/assets/javascripts/libraries
                  app/assets/javascripts/admin/dashboard.js.coffee
+                 app/assets/javascripts/admin/plugins
                  app/assets/stylesheets/admin.css.scss
                  app/assets/stylesheets/libraries
                  app/assets/stylesheets/admin/dashboard.css.scss
+                 app/assets/stylesheets/admin/plugins
                  app/controllers/admin_controller.rb
                  app/controllers/admin/dashboard_controller.rb
                  app/helpers/admin_helper.rb
@@ -31,7 +33,8 @@ class AdminBootstrapTask
 
     routes_file = File.join(Rails.root, 'config', 'routes.rb')
     routes_content = File.read(routes_file)
-    route_rule = "\n  namespace :admin do root :to => 'dashboard#index' end\n"
+    route_rule =  "\n  match 'admin/ajax/:plugin' => 'admin#ajax'"
+    route_rule += "\n  namespace :admin do root :to => 'dashboard#index' end\n"
 
     unless routes_content.match(route_rule.strip)
       new_routes = routes_content.gsub(/\.routes\.draw do(?:\s*\|map\|)?\s*$/) do |after|

@@ -41,8 +41,10 @@ ResourceManager.register(function() {
                 showFlash(response.code, response.message);
             }
         } catch(exception) {}
-    }).ajaxError(function() {
-            showFlash('ERROR', 'An error has occurred! Please, try again later.');
+    }).ajaxError(function(event, jqXHR, ajaxSettings) {
+            if(ajaxSettings.type.toUpperCase() != 'HEAD') {
+                showFlash('ERROR', 'An error has occurred! Please, try again later.');
+            }
         });
 });
 

@@ -1,4 +1,4 @@
-img.paperclip {
+.image.paperclip {
   float: left;
   margin: 0 10px 0 0;
   border: solid 1px #ccc;
@@ -7,9 +7,23 @@ img.paperclip {
   -o-border-radius: 4px;
   -ms-border-radius: 4px;
   border-radius: 4px;
+  position: relative;
+
+  a.btn {
+    position: absolute;
+    top: 29px;
+    left: 13px;
+    margin: 0;
+    display: none;
+  }
+
 }
 
-img.paperclip + input.paperclip {
+.image.paperclip:hover a.btn {
+  display: block;
+}
+
+.image.paperclip + input.paperclip {
   width: auto !important;
   margin: 26px 0;
 }

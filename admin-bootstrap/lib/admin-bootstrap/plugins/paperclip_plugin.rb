@@ -25,4 +25,11 @@ class AdminBootstrap::Plugins::PaperclipPlugin < AdminBootstrap::Plugins::Base
     end
   end
 
+  ajax :paperclip do |params|
+    item = params[:model].constantize.find(params[:id])
+    item.__send__(params[:column].to_s + '=', nil)
+    item.save
+    {:success => true}
+  end
+
 end if defined?(Paperclip)
