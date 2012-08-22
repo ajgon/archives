@@ -1,9 +1,11 @@
 class AdminController < ApplicationController
   include AdminHelper
 
-  before_filter :fetch_resource, :except => [:create, :new, :index]
-  before_filter :fetch_settings_paths, :except => [:destroy]
-  before_filter :redirect_disabled_actions, :except => [:create]
+  before_filter :fetch_resource, :except => [:create, :new, :index, :ajax]
+  before_filter :fetch_settings_paths, :except => [:destroy, :ajax]
+  before_filter :redirect_disabled_actions, :except => [:create, :ajax]
+  before_filter :authenticate_user!
+  before_filter :check_abilities
 
   def index
     @model = model
@@ -11,7 +13,9 @@ class AdminController < ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render :json => AdminBootstrap::DataTable.new(model, params)
+        render :json => (AdminBootstrap::DataTable.new(model, params) do |result|
+          render_to_string(:partial => 'actions', :formats => [:html], :locals => {:resource => result})
+        end)
       end
     end
   end
@@ -63,6 +67,19 @@ class AdminController < ApplicationController
     end
   end
 
+  def ajax
+    respond_to do |format|
+      format.json do
+        if params[:plugin] and AdminBootstrap::Plugins::Base.subclasses.collect {|c| c.name.underscore.split('/').last}.include?(params[:plugin] + '_plugin')
+          render :json => AdminBootstrap::Plugins::Base.ajax_call(params[:plugin].to_sym, params)
+        else
+          raise 'Invalid parameters'
+        end
+      end
+    end
+
+  end
+
   private
   def fetch_resource
     @resource = model.find(params[:id])
@@ -92,10 +109,37 @@ class AdminController < ApplicationController
   end
 
   def parse_params
+
     hash = params[model.to_s.underscore].collect do |k,v|
-      [ k, ( (v.is_a?(Hash) and v.size == 2 and v[:date] and v[:time]) ? v[:date] + ' ' + v[:time] : v) ]
+      if !["issue_ids", "event_ids"].include?(k)
+        [ k, ( (v.is_a?(Hash) and v.size == 2 and v[:date] and v[:time]) ? v[:date] + ' ' + v[:time] : v) ]
+      else
+        []
+      end
     end.flatten
+    if  params[model.to_s.underscore]["issue_ids"]
+      hash << "issue_ids"
+      hash << params[model.to_s.underscore]["issue_ids"]
+    end
+
+    if  params[model.to_s.underscore]["event_ids"]
+      hash << "event_ids"
+      hash << params[model.to_s.underscore]["event_ids"]
+    end
     params[model.to_s.underscore] = HashWithIndifferentAccess.new(Hash[*hash])
+
+  end
+
+  def check_abilities
+    redirect_to :back, :alert => "You don't have permission to see that page" unless current_user.full_control?
+  rescue ActionController::RedirectBackError
+    redirect_to root_path
+  end
+
+  def check_moderator_abilities
+    redirect_to :back, :alert => "You don't have permission to see that page" unless current_user.partial_control?
+  rescue ActionController::RedirectBackError
+    redirect_to root_path
   end
 
 end

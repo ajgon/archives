@@ -7,6 +7,8 @@
         <%= javascript_include_tag "admin", params[:controller] %>
         <script type="text/javascript">
             var RESOURCE = '<%= params[:action] %>';
+            var MODEL = '<%= model_for((params[:controller] + '_controller').classify) %>';
+            var ID = '<%= @resource ? @resource.id : '' %>';
         </script>
     </head>
     <body>

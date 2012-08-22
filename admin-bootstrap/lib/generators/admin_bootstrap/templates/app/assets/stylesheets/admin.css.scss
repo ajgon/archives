@@ -5,6 +5,7 @@
  * = require libraries/jquery-ui.timepicker
  * = require libraries/prettify
  * = require_tree ./admin/plugins */
+
 body {
   padding-top: 60px;
   background-image: image-url('admin/grid-18px-masked.png');
@@ -187,7 +188,7 @@ table.table {
   .btn-danger {
     position: absolute;
     top: 0;
-    right: 0;
+    right: -5%;
   }
 }
 
@@ -209,3 +210,18 @@ table.table {
   }
 }
 
+.loading {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff image-url('admin/loading.gif');
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.7;
+  filter: alpha(opacity=70);
+  display: none;
+}
