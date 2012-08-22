@@ -8,7 +8,7 @@
 //= require libraries/bootstrap
 //= require libraries/prettify
 //= require libraries/resourceManager
-//= require_tree admin/plugins
+//= require_tree ./admin/plugins
 
 // AJAX handlers
 
@@ -77,10 +77,25 @@ ResourceManager.register({only: ['index']}, function() {
             //{ "fnRender" : function(o, val) { return '<div>' + val + '</div>'; }, "aTargets": ['_all'] }
         ],
         "fnServerData": function ( sSource, aoData, fnCallback ) {
+            var allowed_params = [ /^sEcho$/, /^iColumns$/, /^sColumns$/, /^iDisplayStart$/, /^iDisplayLength$/, /^sSearch$/, /^bRegex$/, /^iSortCol_[0-9]+$/, /sSortDir_[0-9]+$/, /^iSortingCols$/  ],
+                ap_length = allowed_params.length,
+                aod_length = aoData.length,
+                aoNewData = [],
+                i = 0, j = 0;
+
+            for(i = 0; i < aod_length; i++) {
+                for(j = 0; j < ap_length; j++) {
+                    if( aoData[i].name.match(allowed_params[j]) ) {
+                        aoNewData.push( aoData[i] );
+                        break;
+                    }
+                }
+            }
+
             $.ajax( {
                 "dataType": 'json',
                 "url": sSource,
-                "data": aoData,
+                "data": aoNewData,
                 "success": function(data, textStatus, jqXHR) {
                     fnCallback(data, textStatus, jqXHR);
                     $('.image').each(function() {
@@ -130,7 +145,7 @@ ResourceManager.register({only: ['index']}, function() {
 
 });
 
-// Enable google prettify
+// Enable google prettify and image tooltips
 ResourceManager.register({only: ['show']}, function() {
     prettyPrint();
     $('.wysiwyg .code').hide();
