@@ -7,7 +7,7 @@
             "fnRowHighlighted": function(iNumRows) {}
         };
 
-        var shiftKeyPressed = false;
+        var ctrlKeyPressed = false;
         var properties = $.extend(defaults, options);
         var oSettings = oTable.fnSettings();
 
@@ -38,7 +38,7 @@
                 if(e.target.nodeName.toUpperCase() == 'A' || $(this).find('.dataTables_empty').size()) {
                     return;
                 }
-                if(!shiftKeyPressed) {
+                if(!ctrlKeyPressed) {
                     $(this).parent().find('tr').not($(this)).removeClass('highlight');
                 }
                 $(this).toggleClass('highlight');
@@ -46,10 +46,10 @@
             });
         };
 
-        // Handle shift
+        // Handle ctrl
         $(document).bind('keydown keyup', function(e) {
-            shiftKeyPressed = e.shiftKey;
-            _fnToggleSelection(!shiftKeyPressed);
+            ctrlKeyPressed = e.ctrlKey || (e.type == 'keydown' && (e.keyCode == 224 || e.charCode == 224));
+            _fnToggleSelection(!ctrlKeyPressed);
         });
 
         return this.each(function() {
