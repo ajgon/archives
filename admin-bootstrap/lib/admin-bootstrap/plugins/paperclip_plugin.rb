@@ -21,7 +21,7 @@ class AdminBootstrap::Plugins::PaperclipPlugin < AdminBootstrap::Plugins::Base
           model.admin_column attr.to_sym, :visible => false
         end
       end
-      formtastic_parameters :as => :file
+      formtastic_parameters :as => :file, :input_html => {:class => 'paperclip'}
     end
   end
 

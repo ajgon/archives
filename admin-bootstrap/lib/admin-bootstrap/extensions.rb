@@ -33,16 +33,8 @@ module FormtasticBootstrap
           visibility = model.admin_plugins(method.to_sym, :visibility)
           unless !visibility.nil? and visibility === false and model.columns.find {|c| c.name == method.to_s}.null
             formtastic_parameters = model.admin_plugins(method.to_sym, :formtastic_parameters) || {}
-            [:input_html, :wrapper_html].each do |fp|
-              formtastic_parameters_table = (formtastic_parameters[fp] || {}).map do |k, v|
-                begin
-                  [k, (v.index('@object') == 0 ? eval(v) : v)]
-                rescue
-                  [k,v]
-                end
-              end
-              formtastic_parameters[fp] = Hash[formtastic_parameters_table]
-            end
+            formtastic_parameters[:input_html] ||= {}
+            formtastic_parameters[:input_html].merge!(:'data-value' => @object.__send__(method).inspect)
             input(method.to_sym, formtastic_parameters)
           end
         end

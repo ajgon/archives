@@ -3,8 +3,8 @@
  * = require formtastic-bootstrap
  * = require libraries/jquery-ui.bootstrap
  * = require libraries/jquery-ui.timepicker
- * = require libraries/prettify */
-
+ * = require libraries/prettify
+ * = require_tree ./admin/plugins */
 body {
   padding-top: 60px;
   background-image: image-url('admin/grid-18px-masked.png');
