@@ -1,3 +1,5 @@
+@import url('font-awesome.css');
+
 body {
     font: 16px/1 Helvetica, sans-serif;
 }
@@ -13,10 +15,29 @@ body {
     margin: 0 2px 2px 0;
     overflow: hidden;
     height: 160px;
+    position: relative;
 }
 
 .photo,
 .photo img {
     min-width: 160px;
     max-width: 240px;
+}
+
+.photo .favourite {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 20px;
+    padding: 2px;
+    background: #fff;
+    border: solid 1px #eee;
+    color: #c00;
+    text-decoration: none;
+    line-height: 18px;
+}
+
+.photo .favourite:hover {
+    color: #fff;
+    background: #c00;
 }
