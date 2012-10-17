@@ -1,7 +1,5 @@
 /*global jQuery*/
 
-var FavIds;
-
 var setupPhotos = (function ($) {
     function each (items, callback) {
         var i;
@@ -98,7 +96,7 @@ var setupPhotos = (function ($) {
         }
     }
 
-    FavIds = {
+    var FavIds = {
         get: function() {
             var fav_ids = (document.cookie.match(/fav_ids=([0-9,]*)/) || ['', ''])[1].split(','),
                 empty_index = fav_ids.indexOf('');
