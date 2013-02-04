@@ -1,9 +1,9 @@
 (function($) {
     var FlexiCarousel = function(items, options) {
         this.settings = $.extend(FlexiCarousel.DEFAULTS, options);
-        this.settings.slidesFlowOptions = $.extend(this.settings.slidesFlows[this.settings.slideFlow].settings, options.slidesFlowOptions);
-        this.items = items;
+        this.loadModuleOptions(options);
         this.clickEvent = 'click';
+        this.items = items;
 
         this.fireCallback('beforeInit');
 
@@ -17,6 +17,17 @@
     };
 
     FlexiCarousel.prototype = {
+        loadModuleOptions: function(options) {
+            var f, fName;
+            for(f in FlexiCarousel.DEFAULTS) {
+                if(f.match(/FlowOptions$/) && FlexiCarousel.DEFAULTS.hasOwnProperty(f)) {
+                    fName = f.replace(/Options$/, '');
+                    if(this.settings[fName + 's'][this.settings[fName]]) {
+                        this.settings[f] = $.extend(this.settings[fName + 's'][this.settings[fName]].settings, options[f]);
+                    }
+                }
+            }
+        },
         initEvents: function() {
             var $fc = this;
             this.getNavItem('slidesNext').on(this.clickEvent, function(e) {
@@ -27,7 +38,7 @@
                 e.preventDefault();
                 $fc.showFrame('previous');
             });
-            this.getNavItem('thumbnail').on(this.clickEvent, function(e) {
+            this.getNavItem('thumbnails').on(this.clickEvent, '.' + this.settings.elem.thumbnail, function(e) {
                 var $this = $(this);
                 e.preventDefault();
                 $fc.showFrame($this.closest('.' + $fc.settings.elem.thumbnails).find('.' + $fc.settings.elem.thumbnail).index($this));
@@ -38,15 +49,19 @@
             var name = arguments[0],
                 params = Array.prototype.slice.call(arguments, 1),
                 successful = {
-                successfulSlide: false,
-                successfulThumbnail: false
-            };
-            if(FlexiCarousel.DEFAULTS.slidesFlows[this.settings.slideFlow] && FlexiCarousel.DEFAULTS.slidesFlows[this.settings.slideFlow][name]) {
-                FlexiCarousel.DEFAULTS.slidesFlows[this.settings.slideFlow][name].apply(this, params);
+                    successfulSlide: false,
+                    successfulThumbnail: false,
+                    successfulSource: true
+                };
+            if(FlexiCarousel.DEFAULTS.sourceFlows[this.settings.sourceFlow] && FlexiCarousel.DEFAULTS.sourceFlows[this.settings.sourceFlow][name]) {
+                FlexiCarousel.DEFAULTS.sourceFlows[this.settings.sourceFlow][name].apply(this, params);
+            }
+            if(FlexiCarousel.DEFAULTS.slidesFlows[this.settings.slidesFlow] && FlexiCarousel.DEFAULTS.slidesFlows[this.settings.slidesFlow][name]) {
+                FlexiCarousel.DEFAULTS.slidesFlows[this.settings.slidesFlow][name].apply(this, params);
                 successful.successfulSlide = true;
             }
-            if(FlexiCarousel.DEFAULTS.thumbnailsFlows[this.settings.thumbnailFlow] && FlexiCarousel.DEFAULTS.thumbnailsFlows[this.settings.thumbnailFlow][name]) {
-                FlexiCarousel.DEFAULTS.thumbnailsFlows[this.settings.thumbnailFlow][name].apply(this, params);
+            if(FlexiCarousel.DEFAULTS.thumbnailsFlows[this.settings.thumbnailsFlow] && FlexiCarousel.DEFAULTS.thumbnailsFlows[this.settings.thumbnailsFlow][name]) {
+                FlexiCarousel.DEFAULTS.thumbnailsFlows[this.settings.thumbnailsFlow][name].apply(this, params);
                 successful.successfulThumbnail = true;
             }
             return successful;
@@ -73,6 +88,20 @@
                 frameIndex = this.settings.loop ? 0 : slidesSize - 1;
             }
             return frameIndex;
+        },
+        populate: function(jsonData) {
+            var slidesContainer = this.items.find('.' + this.settings.elem.slides),
+                thumbnailsContainer = this.items.find('.' + this.settings.elem.thumbnails),
+                jd, jdLen = jsonData.length;
+            slidesContainer.empty();
+            thumbnailsContainer.empty();
+            for(jd = 0; jd < jdLen; jd++) {
+                slidesContainer.append($('<' + this.settings.elem.slidesTagName + ' class="' + this.settings.elem.slide + '">' + jsonData[jd]['slide'] + '</' + this.settings.elem.slidesTagName + '>'));
+                if(jsonData[jd]['thumbnail']) {
+                    thumbnailsContainer.append($('<' + this.settings.elem.thumbnailsTagName + ' class="' + this.settings.elem.thumbnail + '">' + jsonData[jd]['thumbnail'] + '</' + this.settings.elem.thumbnailsTagName + '>'));
+                }
+            }
+            this.switchFrame();
         },
 
         switchSlide: function(slideIndex) {
@@ -130,11 +159,15 @@
 
     FlexiCarousel.DEFAULTS = {
         startIndex: 0,
-        slideFlow: 'none',
-        thumbnailFlow: 'none',
+        sourceFlow: 'default',
+        slidesFlow: 'none',
+        thumbnailsFlow: 'none',
         loop: true,
+        source: 'local',  // local, ajax, jsonp
+        sourceFlowOptions: {},
         slidesFlowOptions: {},
         thumbnailsFlowOptions: {},
+        sourceFlows: {},
         slidesFlows: {},
         thumbnailsFlows: {},
         elem: {
@@ -143,11 +176,13 @@
             slide: 'flexicarousel-slide',
             slidesPrevious: 'flexicarousel-slides-previous',
             slidesNext: 'flexicarousel-slides-next',
+            slidesTagName: 'li',
             thumbnailsContainer: 'flexicarousel-thumbnails-container',
             thumbnails: 'flexicarousel-thumbnails',
             thumbnail: 'flexicarousel-thumbnail',
             thumbnailsPrevious: 'flexicarousel-thumbnails-previous',
             thumbnailsNext: 'flexicarousel-thumbnails-next',
+            thumbnailsTagName: 'li',
             thumbnailCurrent: 'flexicarousel-thumbnail-current'
         }
     };
@@ -166,7 +201,14 @@
                 });
             },
             registerFlow: function(flow) {
-                flow.type = flow.type === 'thumbnailsFlow' ? 'thumbnailsFlows' : 'slidesFlows';
+                switch(flow.type) {
+                    case 'thumbnailsFlow':
+                    case 'sourceFlow':
+                        break;
+                    default:
+                        flow.type = 'slidesFlow';
+                }
+                flow.type = flow.type + 's';
                 FlexiCarousel.DEFAULTS[flow.type][flow.name] = flow;
             }
         };

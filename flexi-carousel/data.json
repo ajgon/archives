@@ -1,0 +1,50 @@
+[
+    {
+        "slide": "<img src=\"img/s/s01.jpg\" />",
+        "thumbnail": "<a href=\"#\"><img src=\"img/s/_t/t01.jpg\" /></a>"
+    },
+    {
+        "slide": "<img src=\"img/s/s02.jpg\" />",
+        "thumbnail": "<a href=\"#\"><img src=\"img/s/_t/t02.jpg\" /></a>"
+    },
+    {
+        "slide": "<img src=\"img/s/s03.jpg\" />",
+        "thumbnail": "<a href=\"#\"><img src=\"img/s/_t/t03.jpg\" /></a>"
+    },
+    {
+        "slide": "<img src=\"img/s/s04.jpg\" />",
+        "thumbnail": "<a href=\"#\"><img src=\"img/s/_t/t04.jpg\" /></a>"
+    },
+    {
+        "slide": "<img src=\"img/s/s05.jpg\" />",
+        "thumbnail": "<a href=\"#\"><img src=\"img/s/_t/t05.jpg\" /></a>"
+    },
+    {
+        "slide": "<img src=\"img/s/s06.jpg\" />",
+        "thumbnail": "<a href=\"#\"><img src=\"img/s/_t/t06.jpg\" /></a>"
+    },
+    {
+        "slide": "<img src=\"img/s/s07.jpg\" />",
+        "thumbnail": "<a href=\"#\"><img src=\"img/s/_t/t07.jpg\" /></a>"
+    },
+    {
+        "slide": "<img src=\"img/s/s08.jpg\" />",
+        "thumbnail": "<a href=\"#\"><img src=\"img/s/_t/t08.jpg\" /></a>"
+    },
+    {
+        "slide": "<img src=\"img/s/s09.jpg\" />",
+        "thumbnail": "<a href=\"#\"><img src=\"img/s/_t/t09.jpg\" /></a>"
+    },
+    {
+        "slide": "<img src=\"img/s/s10.jpg\" />",
+        "thumbnail": "<a href=\"#\"><img src=\"img/s/_t/t10.jpg\" /></a>"
+    },
+    {
+        "slide": "<img src=\"img/s/s11.jpg\" />",
+        "thumbnail": "<a href=\"#\"><img src=\"img/s/_t/t11.jpg\" /></a>"
+    },
+    {
+        "slide": "<img src=\"img/s/s12.jpg\" />",
+        "thumbnail": "<a href=\"#\"><img src=\"img/s/_t/t12.jpg\" /></a>"
+    }
+]
