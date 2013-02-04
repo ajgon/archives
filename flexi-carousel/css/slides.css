@@ -1,0 +1,67 @@
+ul, li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#carousel,
+.flexicarousel-slides-container {
+    position: relative;
+    width: 940px;
+    height: 280px;
+}
+
+.flexicarousel-slides-container .flexicarousel-slides > li {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 940px;
+    height: 280px;
+}
+
+.flexicarousel-thumbnails-container {
+    width: 940px;
+    height: 37px;
+    position: absolute;
+    bottom: -15px;
+    left: 0px;
+}
+
+.flexicarousel-thumbnails-container .flexicarousel-thumbnails {
+    text-align: center;
+}
+
+.flexicarousel-thumbnails-container .flexicarousel-thumbnails > li {
+    display: inline-block;
+    width: 60px;
+    height: 35px;
+    border: solid 1px #c00;
+}
+
+.flexicarousel-thumbnails-container .flexicarousel-thumbnails .flexicarousel-thumbnail-current {
+    border: solid 1px #000;
+}
+
+.flexicarousel-slides-previous,
+.flexicarousel-slides-next,
+.flexicarousel-thumbnails-previous,
+.flexicarousel-thumbnails-next {
+    position: absolute;
+    top: 50%;
+    width: 20px;
+    height: 30px;
+    margin-top: -15px;
+    text-indent: -1000em;
+    overflow: hidden;
+    background: #c00;
+}
+
+.flexicarousel-slides-previous,
+.flexicarousel-thumbnails-previous {
+    left: 10px;
+}
+
+.flexicarousel-slides-next,
+.flexicarousel-thumbnails-next {
+    right: 10px;
+}
