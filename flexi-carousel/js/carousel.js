@@ -1,86 +1,109 @@
 /*global jQuery*/
+/*jslint browser: true */
 /*properties
- DEFAULTS, addClass, append, apply, call, clickEvent, closest, currentIndex,
- data, determineFrameIndex, each, elem, empty, error, extend, filter, find,
- fireCallback, flexiCarousel, fn, getAllSlides, getAllThumbnails,
- getFlowOptions, getNavItem, getSlide, getThumbnail, hasOwnProperty, hide,
- index, init, initEvents, items, length, loadModuleOptions, loop, match, name,
- on, populate, preventDefault, prototype, registerFlow, removeClass, replace,
- settings, show, showFrame, size, slice, slide, slides, slidesContainer,
- slidesFlow, slidesFlowOptions, slidesFlows, slidesNext, slidesPrevious,
+ DEFAULTS, addClass, append, apply, call, carousel, clickEvent, closest,
+ currentIndex, data, determineFrameIndex, each, elem, empty, error, extend,
+ filter, find, fireCallback, flexiCarousel, fn, getAllSlides,
+ getAllThumbnails, getFlowOptions, getNavItem, getSlide, getThumbnail,
+ hasOwnProperty, hide, index, init, initTypes, interval, items, length, loop,
+ match, name, on, populate, preventDefault, prototype, push, registerFlow,
+ reload, reloadEvents, reloadTimer, removeClass, replace, settings, show,
+ showFrame, size, slice, slide, slides, slidesContainer, slidesFlow,
+ slidesFlowOptions, slidesFlows, slidesNext, slidesPrevious, slidesSuccessful,
  slidesTagName, source, sourceFlow, sourceFlowOptions, sourceFlows,
- startIndex, successfulSlide, successfulSource, successfulThumbnail,
- switchFrame, switchSlide, switchThumbnail, thumbnail, thumbnailCurrent,
- thumbnails, thumbnailsContainer, thumbnailsFlow, thumbnailsFlowOptions,
- thumbnailsFlows, thumbnailsNext, thumbnailsPrevious, thumbnailsTagName, type
+ sourceSuccessful, startIndex, switchFrame, switchSlide, switchThumbnail,
+ thumbnail, thumbnailCurrent, thumbnails, thumbnailsContainer, thumbnailsFlow,
+ thumbnailsFlowOptions, thumbnailsFlows, thumbnailsNext, thumbnailsPrevious,
+ thumbnailsSuccessful, thumbnailsTagName, timer, type, types, typesLen,
+ unbind, updateOptions
  */
 
 (function ($) {
     "use strict";
 
     var FlexiCarousel = function (items, options) {
-        this.settings = $.extend(FlexiCarousel.DEFAULTS, options);
-        this.loadModuleOptions(options);
+        this.settings = FlexiCarousel.DEFAULTS;
+        this.types = [];
+        this.typesLen = 0;
+        this.initTypes();
+        this.updateOptions(options);
         this.clickEvent = 'click';
         this.items = items;
+        this.timer = false;
 
         this.fireCallback('beforeInit');
 
-        this.currentIndex = this.settings.startIndex;
-        this.getAllThumbnails().removeClass(this.settings.elem.thumbnailCurrent);
-        this.switchFrame();
-        this.initEvents();
+        this.reload(true);
 
         this.fireCallback('afterInit');
 
     };
 
     FlexiCarousel.prototype = {
-        loadModuleOptions: function (options) {
-            var f, fName;
-            for (f in FlexiCarousel.DEFAULTS) {
-                if (FlexiCarousel.DEFAULTS.hasOwnProperty(f) && f.match(/FlowOptions$/)) {
-                    fName = f.replace(/Options$/, '');
-                    if (this.settings[fName + 's'][this.settings[fName]]) {
-                        this.settings[f] = $.extend(this.settings[fName + 's'][this.settings[fName]].settings, options[f]);
-                    }
+        updateOptions: function (options) {
+            var t;
+            this.settings = $.extend(this.settings, options);
+            for (t = 0; t < this.typesLen; t += 1) {
+                if (this.settings[this.types[t] + 'Flows'][this.settings[this.types[t] + 'Flow']]) {
+                    this.settings[this.types[t] + 'FlowOptions'] = $.extend(this.settings[this.types[t] + 'Flows'][this.settings[this.types[t] + 'Flow']].settings, options[this.types[t] + 'FlowOptions']);
                 }
             }
+
         },
-        initEvents: function () {
+        initTypes: function () {
+            var f;
+            for (f in FlexiCarousel.DEFAULTS) {
+                if (FlexiCarousel.DEFAULTS.hasOwnProperty(f) && f.match(/FlowOptions$/)) {
+                    this.types.push(f.replace(/FlowOptions$/, ''));
+                }
+            }
+            this.typesLen = this.types.length;
+        },
+        reloadEvents: function () {
             var $fc = this;
-            this.getNavItem('slidesNext').on(this.clickEvent, function (e) {
+            this.getNavItem('slidesNext').unbind('.flexiCarousel').on(this.clickEvent + '.flexiCarousel', function (e) {
                 e.preventDefault();
                 $fc.showFrame('next');
             });
-            this.getNavItem('slidesPrevious').on(this.clickEvent, function (e) {
+            this.getNavItem('slidesPrevious').unbind('.flexiCarousel').on(this.clickEvent + '.flexiCarousel', function (e) {
                 e.preventDefault();
                 $fc.showFrame('previous');
             });
-            this.getNavItem('thumbnails').on(this.clickEvent, '.' + this.settings.elem.thumbnail, function (e) {
+            this.getNavItem('thumbnails').unbind('.flexiCarousel').on(this.clickEvent + '.flexiCarousel', '.' + this.settings.elem.thumbnail, function (e) {
                 var $this = $(this);
                 e.preventDefault();
                 $fc.showFrame($this.closest('.' + $fc.settings.elem.thumbnails).find('.' + $fc.settings.elem.thumbnail).index($this));
             });
         },
+        reloadTimer: function () {
+            var $fc = this;
+            if (this.settings.interval) {
+                if (this.timer !== false) {
+                    clearInterval(this.timer);
+                }
+                this.timer = setInterval(function () {
+                    $fc.showFrame('next');
+                }, this.settings.interval);
+            }
+        },
 
         fireCallback: function (name) {
             var params = Array.prototype.slice.call(arguments, 1),
                 successful = {
-                    successfulSlide: false,
-                    successfulThumbnail: false,
-                    successfulSource: true
-                };
-            if (FlexiCarousel.DEFAULTS.sourceFlows[this.settings.sourceFlow] && FlexiCarousel.DEFAULTS.sourceFlows[this.settings.sourceFlow][name]) {
-                FlexiCarousel.DEFAULTS.sourceFlows[this.settings.sourceFlow][name].apply(this, params);
-            }
-            if (FlexiCarousel.DEFAULTS.slidesFlows[this.settings.slidesFlow] && FlexiCarousel.DEFAULTS.slidesFlows[this.settings.slidesFlow][name]) {
-                FlexiCarousel.DEFAULTS.slidesFlows[this.settings.slidesFlow][name].apply(this, params);
-                successful.successfulSlide = true;
-            }
-            if (FlexiCarousel.DEFAULTS.thumbnailsFlows[this.settings.thumbnailsFlow] && FlexiCarousel.DEFAULTS.thumbnailsFlows[this.settings.thumbnailsFlow][name]) {
-                FlexiCarousel.DEFAULTS.thumbnailsFlows[this.settings.thumbnailsFlow][name].apply(this, params);
-                successful.successfulThumbnail = true;
+                    sourceSuccessful: true
+                },
+                pluginObject,
+                t;
+            for (t = 0; t < this.typesLen; t += 1) {
+                if (!successful[this.types[t] + 'Successful']) {
+                    successful[this.types[t] + 'Successful'] = false;
+                }
+                pluginObject = FlexiCarousel.DEFAULTS[this.types[t] + 'Flows'][this.settings[this.types[t] + 'Flow']];
+                if (pluginObject && pluginObject[name]) {
+                    pluginObject.carousel = this;
+                    pluginObject[name].apply(pluginObject, params);
+                    successful[this.types[t] + 'Successful'] = true;
+                }
             }
             return successful;
         },
@@ -142,10 +165,10 @@
                 frameIndex = this.determineFrameIndex(frameIndicator);
             if (frameIndex !== this.currentIndex) {
                 successful = this.fireCallback('showFrame', frameIndex);
-                if (!successful.successfulSlide) {
+                if (!successful.slidesSuccessful) {
                     this.switchSlide(frameIndex);
                 }
-                if (!successful.successfulThumbnail) {
+                if (!successful.thumbnailsSuccessful) {
                     this.switchThumbnail(frameIndex);
                 }
                 this.currentIndex = frameIndex;
@@ -172,6 +195,18 @@
         getFlowOptions: function (flowName) {
             // FIXME determine slides/thumbnail flow in a better way
             return this.settings[flowName + 'FlowOptions'];
+        },
+
+        reload: function (full) {
+            full = full === undefined ? false : full;
+            if (full) {
+                this.currentIndex = this.settings.startIndex;
+                this.getAllThumbnails().removeClass(this.settings.elem.thumbnailCurrent);
+                this.switchFrame();
+            }
+            this.reloadEvents();
+            this.reloadTimer();
+
         }
 
     };
@@ -182,6 +217,7 @@
         slidesFlow: 'none',
         thumbnailsFlow: 'none',
         loop: true,
+        interval: false,
         source: 'local',  // local, ajax, jsonp
         sourceFlowOptions: {},
         slidesFlowOptions: {},
