@@ -1,8 +1,8 @@
 /*global jQuery */
 /*properties
- beforeInit, currentIndex, fadeIn, fadeOut, flexiCarousel, fn, getAllSlides,
- getFlowOptions, getSlide, hide, name, settings, showFrame, switchDuration,
- type
+ beforeInit, carousel, currentIndex, fadeIn, fadeOut, flexiCarousel, fn,
+ getAllSlides, getFlowOptions, getSlide, hide, name, settings, showFrame,
+ switchDuration, type
  */
 
 (function ($) {
@@ -16,12 +16,12 @@
             switchDuration: 500
         },
         beforeInit: function () {
-            this.getAllSlides().hide();
+            this.carousel.getAllSlides().hide();
         },
         showFrame: function (frameIndex) {
-            var options = this.getFlowOptions('slides');
-            this.getSlide(this.currentIndex).fadeOut(options.switchDuration);
-            this.getSlide(frameIndex).fadeIn(options.switchDuration);
+            var options = this.carousel.getFlowOptions('slides');
+            this.carousel.getSlide(this.currentIndex).fadeOut(options.switchDuration);
+            this.carousel.getSlide(frameIndex).fadeIn(options.switchDuration);
         }
     };
 

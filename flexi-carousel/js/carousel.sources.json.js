@@ -1,8 +1,8 @@
 /*global jQuery */
 /*properties
- ajax, ajaxOptions, beforeInit, crossDomain, dataType, flexiCarousel, fn,
- getFlowOptions, json, name, noop, populate, settings, source, success, type,
- url
+ ajax, ajaxOptions, beforeInit, carousel, crossDomain, dataType,
+ flexiCarousel, fn, getFlowOptions, json, name, noop, populate, settings,
+ source, success, type, url
  */
 
 (function ($) {
@@ -18,13 +18,13 @@
             json: []
         },
         beforeInit: function () {
-            var options = this.getFlowOptions('source'),
+            var options = this.carousel.getFlowOptions('source'),
                 json = options.json,
                 jsonp = false,
                 local = true,
                 successCallback = options.ajaxOptions.success === undefined ? $.noop : options.ajaxOptions.success,
-                $this = this;
-            switch (this.settings.source) {
+                $carousel = this.carousel;
+            switch (this.carousel.settings.source) {
             case 'ajax':
                 local = false;
                 break;
@@ -42,12 +42,12 @@
                 options.ajaxOptions.dataType = (jsonp ? 'jsonp' : 'json');
                 options.ajaxOptions.crossDomain = jsonp;
                 options.ajaxOptions.success = function (data, textStatus, jqXHR) {
-                    $this.populate(data);
+                    $carousel.populate(data);
                     successCallback(data, textStatus, jqXHR);
                 };
                 $.ajax(options.ajaxOptions);
             } else {
-                $this.populate(json);
+                $carousel.populate(json);
             }
 
         }
