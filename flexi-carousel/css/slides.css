@@ -11,12 +11,19 @@ ul, li {
     height: 280px;
 }
 
+.flexicarousel-slides-container {
+    overflow: hidden;
+}
+
+.flexicarousel-slides-container .flexicarousel-slides {
+    position: relative;
+}
+
 .flexicarousel-slides-container .flexicarousel-slides > li {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
     width: 940px;
     height: 280px;
+    float: left;
 }
 
 .flexicarousel-thumbnails-container {

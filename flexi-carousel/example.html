@@ -6,20 +6,14 @@
     <link rel="stylesheet" type="text/css" href="css/slides.css" media="all">
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript" src="js/carousel.js"></script>
-    <script type="text/javascript" src="js/carousel.slides.dissolve.js"></script>
-    <script type="text/javascript" src="js/carousel.sources.json.js"></script>
+    <script type="text/javascript" src="js/carousel.slides.slide.js"></script>
     <script type="text/javascript">
         jQuery(function($) {
             $('#carousel').flexiCarousel({
-                slidesFlow: 'dissolve',
+                slidesFlow: 'slide',
                 slidesFlowOptions: {
-                    switchDuration: 1000
-                },
-                sourceFlow: 'json',
-                sourceFlowOptions: {
-                    url: '/data.json'
-                },
-                source: 'ajax'
+                    loop: 'infinity'
+                }
             });
         });
     </script>
@@ -28,7 +22,7 @@
     <div id="carousel">
         <div class="flexicarousel-slides-container">
             <ul class="flexicarousel-slides">
-                <!-- <li class="flexicarousel-slide"><img src="img/s/s01.jpg" /></li>
+                <li class="flexicarousel-slide"><img src="img/s/s01.jpg" /></li>
                 <li class="flexicarousel-slide"><img src="img/s/s02.jpg" /></li>
                 <li class="flexicarousel-slide"><img src="img/s/s03.jpg" /></li>
                 <li class="flexicarousel-slide"><img src="img/s/s04.jpg" /></li>
@@ -39,14 +33,14 @@
                 <li class="flexicarousel-slide"><img src="img/s/s09.jpg" /></li>
                 <li class="flexicarousel-slide"><img src="img/s/s10.jpg" /></li>
                 <li class="flexicarousel-slide"><img src="img/s/s11.jpg" /></li>
-                <li class="flexicarousel-slide"><img src="img/s/s12.jpg" /></li> -->
+                <li class="flexicarousel-slide"><img src="img/s/s12.jpg" /></li>
             </ul>
             <a href="#" class="flexicarousel-slides-previous">Previous</a>
             <a href="#" class="flexicarousel-slides-next">Next</a>
         </div>
         <div class="flexicarousel-thumbnails-container">
             <ul class="flexicarousel-thumbnails">
-                <!-- <li class="flexicarousel-thumbnail"><a href="#"><img src="img/s/_t/t01.jpg" /></a></li>
+                <li class="flexicarousel-thumbnail"><a href="#"><img src="img/s/_t/t01.jpg" /></a></li>
                 <li class="flexicarousel-thumbnail"><a href="#"><img src="img/s/_t/t02.jpg" /></a></li>
                 <li class="flexicarousel-thumbnail"><a href="#"><img src="img/s/_t/t03.jpg" /></a></li>
                 <li class="flexicarousel-thumbnail"><a href="#"><img src="img/s/_t/t04.jpg" /></a></li>
@@ -57,7 +51,7 @@
                 <li class="flexicarousel-thumbnail"><a href="#"><img src="img/s/_t/t09.jpg" /></a></li>
                 <li class="flexicarousel-thumbnail"><a href="#"><img src="img/s/_t/t10.jpg" /></a></li>
                 <li class="flexicarousel-thumbnail"><a href="#"><img src="img/s/_t/t11.jpg" /></a></li>
-                <li class="flexicarousel-thumbnail"><a href="#"><img src="img/s/_t/t12.jpg" /></a></li> -->
+                <li class="flexicarousel-thumbnail"><a href="#"><img src="img/s/_t/t12.jpg" /></a></li>
             </ul>
             <a href="#" class="flexicarousel-thumbnails-previous">Previous</a>
             <a href="#" class="flexicarousel-thumbnails-next">Next</a>
