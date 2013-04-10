@@ -1,28 +1,31 @@
 /*global jQuery*/
 /*jslint browser: true */
 /*properties
- DEFAULTS, addClass, append, apply, call, carousel, clickEvent, closest,
- currentIndex, data, determineFrameIndex, each, elem, empty, error, extend,
- filter, find, fireCallback, flexiCarousel, fn, getAllSlides,
- getAllThumbnails, getFlowOptions, getNavItem, getSlide, getThumbnail,
- hasOwnProperty, hide, index, init, initTypes, interval, items, length, loop,
- match, name, on, populate, preventDefault, prototype, push, registerFlow,
- reload, reloadEvents, reloadTimer, removeClass, replace, settings, show,
- showFrame, size, slice, slide, slides, slidesContainer, slidesFlow,
- slidesFlowOptions, slidesFlows, slidesNext, slidesPrevious, slidesSuccessful,
- slidesTagName, source, sourceFlow, sourceFlowOptions, sourceFlows,
- sourceSuccessful, startIndex, switchFrame, switchSlide, switchThumbnail,
- thumbnail, thumbnailCurrent, thumbnails, thumbnailsContainer, thumbnailsFlow,
- thumbnailsFlowOptions, thumbnailsFlows, thumbnailsNext, thumbnailsPrevious,
- thumbnailsSuccessful, thumbnailsTagName, timer, type, types, typesLen,
- unbind, updateOptions
- */
+    DEFAULTS, FC, addClass, append, apply, call, carousel, charAt, clickEvent,
+    closest, currentIndex, data, determineFrameIndex, each, elem, empty, error,
+    events, extend, filter, find, fireCallback, flexiCarousel, fn, getAllSlides,
+    getAllThumbnails, getFlowOptions, getNavItem, getSlide, getSlidesCount,
+    getThumbnail, hasOwnProperty, hide, index, init, initTypes, interval, items,
+    length, loop, match, name, noop, on, onSlideChange, populate,
+    preventDefault, prototype, push, registerFlow, reload, reloadEvents,
+    reloadTimer, removeClass, replace, settings, show, showFrame, size, slice,
+    slide, slides, slidesContainer, slidesFlow, slidesFlowOptions, slidesFlows,
+    slidesNext, slidesNum, slidesPrevious, slidesSuccessful, slidesTagName,
+    source, sourceFlow, sourceFlowOptions, sourceFlows, sourceSuccessful,
+    startIndex, switchFrame, switchSlide, switchThumbnail, thumbnail,
+    thumbnailCurrent, thumbnails, thumbnailsContainer, thumbnailsFlow,
+    thumbnailsFlowOptions, thumbnailsFlows, thumbnailsNext, thumbnailsPrevious,
+    thumbnailsSuccessful, thumbnailsTagName, timer, toUpperCase, type, types,
+    typesLen, unbind, updateOptions
+*/
+
 
 (function ($) {
     "use strict";
 
     var FlexiCarousel = function (items, options) {
-        this.settings = FlexiCarousel.DEFAULTS;
+        this.settings = {};
+        $.extend(true, this.settings, FlexiCarousel.DEFAULTS);
         this.types = [];
         this.typesLen = 0;
         this.initTypes();
@@ -34,6 +37,7 @@
         this.fireCallback('beforeInit');
 
         this.reload(true);
+        this.slidesNum = this.getAllSlides().size();
 
         this.fireCallback('afterInit');
 
@@ -63,16 +67,24 @@
             var $fc = this;
             this.getNavItem('slidesNext').unbind('.flexiCarousel').on(this.clickEvent + '.flexiCarousel', function (e) {
                 e.preventDefault();
-                $fc.showFrame('next');
+                $fc.showFrame('next', 'slidesNext');
+            });
+            this.getNavItem('thumbnailsNext').unbind('.flexiCarousel').on(this.clickEvent + '.flexiCarousel', function (e) {
+                e.preventDefault();
+                $fc.showFrame('next', 'thumbnailsNext');
             });
             this.getNavItem('slidesPrevious').unbind('.flexiCarousel').on(this.clickEvent + '.flexiCarousel', function (e) {
                 e.preventDefault();
-                $fc.showFrame('previous');
+                $fc.showFrame('previous', 'slidesPrevious');
+            });
+            this.getNavItem('thumbnailsPrevious').unbind('.flexiCarousel').on(this.clickEvent + '.flexiCarousel', function (e) {
+                e.preventDefault();
+                $fc.showFrame('previous', 'thumbnailsPrevious');
             });
             this.getNavItem('thumbnails').unbind('.flexiCarousel').on(this.clickEvent + '.flexiCarousel', '.' + this.settings.elem.thumbnail, function (e) {
                 var $this = $(this);
                 e.preventDefault();
-                $fc.showFrame($this.closest('.' + $fc.settings.elem.thumbnails).find('.' + $fc.settings.elem.thumbnail).index($this));
+                $fc.showFrame($this.closest('.' + $fc.settings.elem.thumbnails).find('.' + $fc.settings.elem.thumbnail).index($this), 'thumbnails');
             });
         },
         reloadTimer: function () {
@@ -82,7 +94,7 @@
                     clearInterval(this.timer);
                 }
                 this.timer = setInterval(function () {
-                    $fc.showFrame('next');
+                    $fc.showFrame('next', 'timer');
                 }, this.settings.interval);
             }
         },
@@ -108,7 +120,7 @@
             return successful;
         },
         determineFrameIndex: function (frameIndicator) {
-            var slidesSize = this.getAllSlides().size(),
+            var slidesSize = this.getSlidesCount(),
                 frameIndex = this.currentIndex;
             switch (frameIndicator) {
             case 'next':
@@ -143,6 +155,7 @@
                     thumbnailsContainer.append($('<' + this.settings.elem.thumbnailsTagName + ' class="' + this.settings.elem.thumbnail + '">' + jsonData[jd].thumbnail + '</' + this.settings.elem.thumbnailsTagName + '>'));
                 }
             }
+            this.slidesNum = jdLen;
             this.switchFrame();
         },
 
@@ -160,23 +173,30 @@
             this.switchThumbnail(frameIndex);
         },
 
-        showFrame: function (frameIndicator) {
+        showFrame: function (frameIndicator, originalCalee) {
             var successful,
                 frameIndex = this.determineFrameIndex(frameIndicator);
             if (frameIndex !== this.currentIndex) {
-                successful = this.fireCallback('showFrame', frameIndex);
-                if (!successful.slidesSuccessful) {
-                    this.switchSlide(frameIndex);
+                successful = this.fireCallback('showFrameFrom' + originalCalee.charAt(0).toUpperCase() + originalCalee.slice(1), frameIndex);
+                if (!successful.slidesSuccessful && !successful.thumbnailsSuccessful) {
+                    successful = this.fireCallback('showFrame', frameIndex, originalCalee);
+                    if (!successful.slidesSuccessful) {
+                        this.switchSlide(frameIndex);
+                    }
+                    if (!successful.thumbnailsSuccessful) {
+                        this.switchThumbnail(frameIndex);
+                    }
+                    this.currentIndex = frameIndex;
+                    this.settings.events.onSlideChange(this.getSlide(frameIndex), this.getThumbnail(frameIndex));
                 }
-                if (!successful.thumbnailsSuccessful) {
-                    this.switchThumbnail(frameIndex);
-                }
-                this.currentIndex = frameIndex;
             }
         },
 
         getAllSlides: function () {
             return this.items.find('.' + this.settings.elem.slides + ' > .' + this.settings.elem.slide);
+        },
+        getSlidesCount: function() {
+            return this.slidesNum;
         },
         getSlide: function (slideIndex) {
             slideIndex = slideIndex === undefined ? this.currentIndex : slideIndex;
@@ -225,6 +245,9 @@
         sourceFlows: {},
         slidesFlows: {},
         thumbnailsFlows: {},
+        events: {
+            onSlideChange: $.noop
+        },
         elem: {
             slidesContainer: 'flexicarousel-slides-container',
             slides: 'flexicarousel-slides',
@@ -245,6 +268,8 @@
     $.fn.flexiCarousel = function (method) {
         var methods = {
             init: function (options) {
+                window.FC = FlexiCarousel;
+
                 return this.each(function () {
                     var $this = $(this),
                         flexiCarousel = new FlexiCarousel($this, options);
