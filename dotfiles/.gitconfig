@@ -1,0 +1,19 @@
+[user]
+	name = Igor Rzegocki
+	email = ajgon@irgon.com
+
+[core]
+	editor = vim
+	pager = cat
+
+[alias]
+	ci = commit
+	co = checkout
+	st = status
+	br = branch
+
+[color]
+	status = auto
+	branch = auto
+	interactive = auto
+	diff = auto
