@@ -1,0 +1,23 @@
+{
+	"color_scheme": "Packages/Color Scheme - Default/Monokai Bright.tmTheme",
+	"theme": "Flatland Dark.sublime-theme",
+
+    "caret_style": "solid",
+    "wide_caret": true,
+
+    "draw_white_space": "all",
+    "fold_buttons": false,
+    "highlight_line": true,
+
+    "scroll_past_end": false,
+    "highlight_modified_tabs": true,
+    "find_selected_text": true,
+
+    "rulers": [ 79 ],
+    "word_wrap": true,
+
+    "tab_size": 4,
+    "translate_tabs_to_spaces": true,
+    "trim_trailing_white_space_on_save": true,
+    "ensure_newline_at_eof_on_save": true
+}
