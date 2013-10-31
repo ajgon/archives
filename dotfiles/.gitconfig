@@ -5,6 +5,7 @@
 [core]
 	editor = vim
 	pager = cat
+	excludesfile = ~/.gitignore
 
 [alias]
 	ci = commit
