@@ -1,6 +1,8 @@
 admin-bootstrap
 ===============
 
+![deprecated](http://ajgon.github.io/images/deprecated.png)
+
 Quick usage info
 ----------------
 
