@@ -50,7 +50,7 @@ Set.prototype.save = function(fn){
     , json = JSON.stringify(this);
 
   // get the config file path from env variable
-  var path = process.env.NODE_MONGOOSE_MIGRATIONS_CONFIG
+  var path = process.env.NODE_MONGOOSE_MIGRATIONS_CONFIG || 'migrations.json';
   var mongoose = require('mongoose')
 
   fs.readFile(path, 'utf8', function(err, json){
@@ -93,7 +93,7 @@ Set.prototype.load = function(fn){
   this.emit('load');
 
   // get the config file path from env variable
-  var path = process.env.NODE_MONGOOSE_MIGRATIONS_CONFIG
+  var path = process.env.NODE_MONGOOSE_MIGRATIONS_CONFIG || 'migrations.json';
   var mongoose = require('mongoose')
 
   fs.readFile(path, 'utf8', function(err, json){
