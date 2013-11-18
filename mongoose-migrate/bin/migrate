@@ -162,16 +162,19 @@ var commands = {
    */
 
   create: function(){
-    var migrations = fs.readdirSync('migrations').filter(function(file){
+    var timestamps = fs.readdirSync('migrations').filter(function(file){
       return file.match(/^\d+/);
     }).map(function(file){
-      return parseInt(file.match(/^(\d+)/)[1], 10);
-    }).sort(function(a, b){
-      return a - b;
+      return file.match(/^(\d+)/)[1];
     });
 
-    var curr = pad((migrations.pop() || 0) + 1)
-      , title = slugify([].slice.call(arguments).join(' '));
+    var curr = (new Date()).toISOString().replace(/\.[0-9]+|[^0-9]+/g, '');
+
+    while(timestamps.indexOf(curr) > -1) {
+      curr = (parseInt(curr, 10) + 1).toString();
+    }
+
+    var title = slugify([].slice.call(arguments).join(' '));
     title = title ? curr + '-' + title : curr;
     create(title);
   }

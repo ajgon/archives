@@ -161,6 +161,7 @@ Set.prototype.migrate = function(direction, fn, migrationName){
       if ('ENOENT' != err.code) return fn(err);
     } else {
       self.pos = obj.pos;
+      self.dbMigrations = obj.migrations;
     }
     self._migrate(direction, fn, migrationName);
   });
@@ -188,25 +189,45 @@ Set.prototype.migrate = function(direction, fn, migrationName){
 Set.prototype._migrate = function(direction, fn, migrationName){
   var self = this
     , migrations
-    , migrationPos;
+    , migrationPos
+    , dbMigrations
+    , invokedMigrations;
 
-  if (!migrationName) {
-    migrationPos = direction == 'up' ? this.migrations.length : 0;
-  } else if ((migrationPos = positionOfMigration(this.migrations, migrationName)) == -1) {
-    console.error("Could not find migration: " + migrationName);
-    process.exit(1);
+  var dbMigrations = (this.dbMigrations || []).map(function(m) { return m.title; });
+
+  migrations = this.migrations.filter(function(m) {
+    var additionalMigrations = dbMigrations.indexOf(m.title) == -1;
+    return direction == 'up' ? additionalMigrations : !additionalMigrations;
+  });
+
+
+
+  // if (direction == 'down') {
+  //   migrations = migrations.reverse();
+  // }
+
+  if (migrationName) {
+    if (direction == 'up') {
+      migrations = migrations.reverse();
+    }
+
+    migrationIndex = migrations.map(function(m) { return m.title; }).indexOf(migrationName);
+
+    if (migrationIndex > -1) {
+      migrations = migrations.slice(migrationIndex);
+    } else {
+      migrations = [];
+    }
+
+    migrations = migrations.reverse();
+
+  } else {
+    if (direction == 'down') {
+      migrations = migrations.reverse();
+    }
   }
 
-  switch (direction) {
-    case 'up':
-      migrations = this.migrations.slice(this.pos, migrationPos+1);
-      this.pos += migrations.length;
-      break;
-    case 'down':
-      migrations = this.migrations.slice(migrationPos, this.pos).reverse();
-      this.pos -= migrations.length;
-      break;
-  }
+  invokedMigrations = migrations.map(function(m) { return {title: m.title}; });
 
   function next(err, migration) {
     // error from previous migration
@@ -215,6 +236,13 @@ Set.prototype._migrate = function(direction, fn, migrationName){
     // done
     if (!migration) {
       self.emit('complete');
+      if(direction == 'up') {
+        self.migrations = self.dbMigrations.concat(invokedMigrations).sort(function(m, n) { return m.title > n.title; });
+      } else {
+        invokedMigrations = invokedMigrations.map(function(m) { return m.title; });
+        self.migrations = self.dbMigrations.filter(function(m) { return invokedMigrations.indexOf(m.title) == -1; });
+      }
+      delete self.dbMigrations;
       self.save(fn);
       return;
     }
