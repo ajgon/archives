@@ -1,16 +1,16 @@
-
 /*!
  * migrate - Set
  * Copyright (c) 2010 TJ Holowaychuk <tj@vision-media.ca>
  * MIT Licensed
  */
+'use strict';
 
 /**
  * Module dependencies.
  */
 
-var EventEmitter = require('events').EventEmitter
-  , fs = require('fs');
+var EventEmitter = require('events').EventEmitter,
+    fs = require('fs');
 
 /**
  * Expose `Set`.
@@ -27,16 +27,16 @@ module.exports = Set;
  */
 
 function Set(path) {
-  this.migrations = [];
-  this.path = path;
-  this.pos = 0;
-};
+    this.migrations = [];
+    this.path = path;
+    this.pos = 0;
+}
 
 /**
  * Inherit from `EventEmitter.prototype`.
  */
 
-Set.prototype.__proto__ = EventEmitter.prototype;
+Set.prototype = EventEmitter.prototype;
 
 /**
  * Save the migration data and call `fn(err)`.
@@ -46,39 +46,42 @@ Set.prototype.__proto__ = EventEmitter.prototype;
  */
 
 Set.prototype.save = function(fn){
-  var self = this
-    , json = JSON.stringify(this);
+    var self = this;
 
-  // get the config file path from env variable
-  var path = process.env.NODE_MONGOOSE_MIGRATIONS_CONFIG || 'migrations.json';
-  var mongoose = require('mongoose')
+    // get the config file path from env variable
+    var path = process.env.NODE_MONGOOSE_MIGRATIONS_CONFIG || 'migrations.json';
+    var mongoose = require('mongoose');
 
-  fs.readFile(path, 'utf8', function(err, json){
-    var env = process.env.NODE_ENV || 'development';
-    var config = JSON.parse(json)[env];
+    fs.readFile(path, 'utf8', function(err, json){
+        var env = process.env.NODE_ENV || 'development';
+        var config = JSON.parse(json)[env];
 
-    if (err) return fn(err);
-
-    mongoose.connect(config.db, function () {
-      var Migration = mongoose.model(config.modelName)
-
-      Migration.findOne().exec(function (err, doc) {
-        if (!doc) {
-          var m = new Migration({ migration: self })
-          m.save(cb);
-        } else {
-          doc.migration = self
-          doc.save(cb);
+        if (err) {
+            return fn(err);
         }
-      });
+
+        mongoose.connect(config.db, function () {
+            var Migration = mongoose.model(config.modelName);
+
+            Migration.findOne().exec(function (err, doc) {
+                if (!doc) {
+                    var m = new Migration({ migration: self });
+                    m.save(cb);
+                } else {
+                    doc.migration = self;
+                    doc.save(cb);
+                }
+            });
+        });
+
+        function cb(err) {
+            self.emit('save');
+            if(fn) {
+                fn(err);
+            }
+        }
+
     });
-
-    function cb(err) {
-      self.emit('save');
-      fn && fn(err);
-    }
-
-  });
 };
 
 /**
@@ -90,37 +93,43 @@ Set.prototype.save = function(fn){
  */
 
 Set.prototype.load = function(fn){
-  this.emit('load');
+    this.emit('load');
 
-  // get the config file path from env variable
-  var path = process.env.NODE_MONGOOSE_MIGRATIONS_CONFIG || 'migrations.json';
-  var mongoose = require('mongoose')
+    // get the config file path from env variable
+    var path = process.env.NODE_MONGOOSE_MIGRATIONS_CONFIG || 'migrations.json';
+    var mongoose = require('mongoose');
 
-  fs.readFile(path, 'utf8', function(err, json){
-    if (err) return fn(err);
-
-    var env = process.env.NODE_ENV || 'development';
-    var config = JSON.parse(json)[env];
-
-    mongoose.connect(config.db, function () {
-      var Schema = mongoose.Schema;
-      var MigrationSchema = new Schema(config.schema);
-      var Migration = mongoose.model(config.modelName, MigrationSchema)
-
-      Migration.findOne().exec(function (err, doc) {
-        if (err) return fn(err);
-        try {
-          var obj = doc && doc.migration
-            ? doc.migration
-            : { pos: 0, migrations: [] }
-
-          fn(null, obj);
-        } catch (err) {
-          fn(err);
+    fs.readFile(path, 'utf8', function(err, json){
+        var env,
+            config;
+        if (err) {
+            return fn(err);
         }
-      })
+
+        env = process.env.NODE_ENV || 'development';
+        config = JSON.parse(json)[env];
+
+        mongoose.connect(config.db, function () {
+            var Schema = mongoose.Schema;
+            var MigrationSchema = new Schema(config.schema);
+            var Migration = mongoose.model(config.modelName, MigrationSchema);
+
+            Migration.findOne().exec(function (err, doc) {
+                if (err) {
+                    return fn(err);
+                }
+                try {
+                    var obj = doc && doc.migration ?
+                        doc.migration :
+                        { pos: 0, migrations: [] };
+
+                    fn(null, obj);
+                } catch (err) {
+                    fn(err);
+                }
+            });
+        });
     });
-  });
 };
 
 /**
@@ -131,7 +140,7 @@ Set.prototype.load = function(fn){
  */
 
 Set.prototype.down = function(fn, migrationName){
-  this.migrate('down', fn, migrationName);
+    this.migrate('down', fn, migrationName);
 };
 
 /**
@@ -142,7 +151,7 @@ Set.prototype.down = function(fn, migrationName){
  */
 
 Set.prototype.up = function(fn, migrationName){
-  this.migrate('up', fn, migrationName);
+    this.migrate('up', fn, migrationName);
 };
 
 /**
@@ -154,31 +163,20 @@ Set.prototype.up = function(fn, migrationName){
  */
 
 Set.prototype.migrate = function(direction, fn, migrationName){
-  var self = this;
-  fn = fn || function(){};
-  this.load(function(err, obj){
-    if (err) {
-      if ('ENOENT' != err.code) return fn(err);
-    } else {
-      self.pos = obj.pos;
-      self.dbMigrations = obj.migrations;
-    }
-    self._migrate(direction, fn, migrationName);
-  });
+    var self = this;
+    fn = fn || function(){};
+    this.load(function(err, obj){
+        if (err) {
+            if ('ENOENT' !== err.code) {
+                return fn(err);
+            }
+        } else {
+            self.pos = obj.pos;
+            self.dbMigrations = obj.migrations;
+        }
+        self._migrate(direction, fn, migrationName);
+    });
 };
-
-/**
- * Get index of given migration in list of migrations
- *
- * @api private
- */
-
- function positionOfMigration(migrations, filename) {
-   for(var i=0; i < migrations.length; ++i) {
-     if (migrations[i].title == filename) return i;
-   }
-   return -1;
- }
 
 /**
  * Perform migration.
@@ -187,71 +185,65 @@ Set.prototype.migrate = function(direction, fn, migrationName){
  */
 
 Set.prototype._migrate = function(direction, fn, migrationName){
-  var self = this
-    , migrations
-    , migrationPos
-    , dbMigrations
-    , invokedMigrations;
+    var self = this,
+        migrations,
+        migrationIndex,
+        invokedMigrations;
 
-  var dbMigrations = (this.dbMigrations || []).map(function(m) { return m.title; });
+    var dbMigrations = (this.dbMigrations || []).map(function(m) { return m.title; });
 
-  migrations = this.migrations.filter(function(m) {
-    var additionalMigrations = dbMigrations.indexOf(m.title) == -1;
-    return direction == 'up' ? additionalMigrations : !additionalMigrations;
-  });
-
-
-
-  // if (direction == 'down') {
-  //   migrations = migrations.reverse();
-  // }
-
-  if (migrationName) {
-    if (direction == 'up') {
-      migrations = migrations.reverse();
-    }
-
-    migrationIndex = migrations.map(function(m) { return m.title; }).indexOf(migrationName);
-
-    if (migrationIndex > -1) {
-      migrations = migrations.slice(migrationIndex);
-    } else {
-      migrations = [];
-    }
-
-    migrations = migrations.reverse();
-
-  } else {
-    if (direction == 'down') {
-      migrations = migrations.reverse();
-    }
-  }
-
-  invokedMigrations = migrations.map(function(m) { return {title: m.title}; });
-
-  function next(err, migration) {
-    // error from previous migration
-    if (err) return fn(err);
-
-    // done
-    if (!migration) {
-      self.emit('complete');
-      if(direction == 'up') {
-        self.migrations = self.dbMigrations.concat(invokedMigrations).sort(function(m, n) { return m.title > n.title; });
-      } else {
-        invokedMigrations = invokedMigrations.map(function(m) { return m.title; });
-        self.migrations = self.dbMigrations.filter(function(m) { return invokedMigrations.indexOf(m.title) == -1; });
-      }
-      delete self.dbMigrations;
-      self.save(fn);
-      return;
-    }
-
-    self.emit('migration', migration, direction);
-    migration[direction](function(err){
-      next(err, migrations.shift());
+    migrations = this.migrations.filter(function(m) {
+        var additionalMigrations = dbMigrations.indexOf(m.title) === -1;
+        return direction === 'up' ? additionalMigrations : !additionalMigrations;
     });
-  }
 
-  next(null, migrations.shift());
+    if (migrationName) {
+        if (direction === 'up') {
+            migrations = migrations.reverse();
+        }
+
+        migrationIndex = migrations.map(function(m) { return m.title; }).indexOf(migrationName);
+
+        if (migrationIndex > -1) {
+            migrations = migrations.slice(migrationIndex);
+        } else {
+            migrations = [];
+        }
+
+        migrations = migrations.reverse();
+    } else {
+        if (direction === 'down') {
+            migrations = migrations.reverse();
+        }
+    }
+
+    invokedMigrations = migrations.map(function(m) { return {title: m.title}; });
+
+    function next(err, migration) {
+        // error from previous migration
+        if (err) {
+            return fn(err);
+        }
+
+        // done
+        if (!migration) {
+            self.emit('complete');
+            if(direction === 'up') {
+                self.migrations = self.dbMigrations.concat(invokedMigrations).sort(function(m, n) { return m.title > n.title; });
+            } else {
+                invokedMigrations = invokedMigrations.map(function(m) { return m.title; });
+                self.migrations = self.dbMigrations.filter(function(m) { return invokedMigrations.indexOf(m.title) === -1; });
+            }
+            delete self.dbMigrations;
+            self.save(fn);
+            return;
+        }
+
+        self.emit('migration', migration, direction);
+        migration[direction](function(err){
+            next(err, migrations.shift());
+        });
+    }
+
+    next(null, migrations.shift());
 };
