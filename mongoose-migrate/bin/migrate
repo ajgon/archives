@@ -4,9 +4,9 @@
  * Module dependencies.
  */
 
-var migrate = require('../')
-  , join = require('path').join
-  , fs = require('fs');
+var migrate = require('../'),
+    join = require('path').join,
+    fs = require('fs');
 
 /**
  * Arguments.
@@ -27,23 +27,28 @@ var options = { args: [] };
 var cwd;
 
 /**
+ * Arguments
+ */
+var arg;
+
+/**
  * Usage information.
  */
 
 var usage = [
+    '',
+    '  Usage: migrate [options] [command]',
+    '',
+    '  Options:',
+    '',
+    '     -c  --chdir <path>   change the working directory',
+    '',
+    '  Commands:',
+    '',
+    '     down   [name]    migrate down till given migration',
+    '     up     [name]    migrate up till given migration (the default command)',
+    '     create [title]   create a new migration file with optional [title]',
     ''
-  , '  Usage: migrate [options] [command]'
-  , ''
-  , '  Options:'
-  , ''
-  , '     -c, --chdir <path>   change the working directory'
-  , ''
-  , '  Commands:'
-  , ''
-  , '     down   [name]    migrate down till given migration'
-  , '     up     [name]    migrate up till given migration (the default command)'
-  , '     create [title]   create a new migration file with optional [title]'
-  , ''
 ].join('\n');
 
 /**
@@ -51,54 +56,58 @@ var usage = [
  */
 
 var template = [
+    '',
+    'exports.up = function(next){',
+    '    next();',
+    '};',
+    '',
+    'exports.down = function(next){',
+    '    next();',
+    '};',
     ''
-  , 'exports.up = function(next){'
-  , '  next();'
-  , '};'
-  , ''
-  , 'exports.down = function(next){'
-  , '  next();'
-  , '};'
-  , ''
 ].join('\n');
-
-// require an argument
-
-function required() {
-  if (args.length) return args.shift();
-  abort(arg + ' requires an argument');
-}
 
 // abort with a message
 
 function abort(msg) {
-  console.error('  %s', msg);
-  process.exit(1);
+    'use strict';
+    console.error('  %s', msg);
+    process.exit(1);
 }
+
+// require an argument
+
+function required() {
+    'use strict';
+    if (args.length) {
+        return args.shift();
+    }
+    abort(arg + ' requires an argument');
+}
+
 
 // parse arguments
 
-var arg;
 while (args.length) {
-  arg = args.shift();
-  switch (arg) {
+    arg = args.shift();
+    switch (arg) {
     case '-h':
     case '--help':
     case 'help':
-      console.log(usage);
-      process.exit();
-      break;
+        console.log(usage);
+        process.exit();
+        break;
     case '-c':
     case '--chdir':
-      process.chdir(cwd = required());
-      break;
+        process.chdir(cwd = required());
+        break;
     default:
-      if (options.command) {
-        options.args.push(arg);
-      } else {
-        options.command = arg;
-      }
-  }
+        if (options.command) {
+            options.args.push(arg);
+        } else {
+            options.command = arg;
+        }
+    }
 }
 
 /**
@@ -106,11 +115,12 @@ while (args.length) {
  */
 
 function migrations() {
-  return fs.readdirSync('migrations').filter(function(file){
-    return file.match(/^\d+.*\.js$/);
-  }).sort().map(function(file){
-    return 'migrations/' + file;
-  });
+    'use strict';
+    return fs.readdirSync('migrations').filter(function(file){
+        return file.match(/^\d+.*\.js$/);
+    }).sort().map(function(file){
+        return 'migrations/' + file;
+    });
 }
 
 /**
@@ -118,7 +128,8 @@ function migrations() {
  */
 
 function log(key, msg) {
-  console.log('  \033[90m%s :\033[0m \033[36m%s\033[0m', key, msg);
+    /* jshint strict: false */
+    console.log('  \033[90m%s :\033[0m \033[36m%s\033[0m', key, msg);
 }
 
 /**
@@ -126,69 +137,8 @@ function log(key, msg) {
  */
 
 function slugify(str) {
-  return str.replace(/\s+/g, '-');
-}
-
-// create ./migrations
-
-try {
-  fs.mkdirSync('migrations', 0774);
-} catch (err) {
-  // ignore
-}
-
-// commands
-
-var commands = {
-
-  /**
-   * up [name]
-   */
-
-  up: function(migrationName){
-    performMigration('up', migrationName);
-  },
-
-  /**
-   * down [name]
-   */
-
-  down: function(migrationName){
-    performMigration('down', migrationName);
-  },
-
-  /**
-   * create [title]
-   */
-
-  create: function(){
-    var timestamps = fs.readdirSync('migrations').filter(function(file){
-      return file.match(/^\d+/);
-    }).map(function(file){
-      return file.match(/^(\d+)/)[1];
-    });
-
-    var curr = (new Date()).toISOString().replace(/\.[0-9]+|[^0-9]+/g, '');
-
-    while(timestamps.indexOf(curr) > -1) {
-      curr = (parseInt(curr, 10) + 1).toString();
-    }
-
-    var title = slugify([].slice.call(arguments).join(' '));
-    title = title ? curr + '-' + title : curr;
-    create(title);
-  }
-};
-
-/**
- * Pad the given number.
- *
- * @param {Number} n
- * @return {String}
- */
-
-function pad(n) {
-  return Array(4 - n.toString().length).join('0') + n;
+    'use strict';
+    return str.replace(/\s+/g, '-');
 }
 
 /**
@@ -198,10 +148,11 @@ function pad(n) {
  */
 
 function create(name) {
-  cwd = cwd || process.cwd();
-  var path = 'migrations/' + name + '.js';
-  log('create', join(cwd, path));
-  fs.writeFileSync(path, template);
+    'use strict';
+    cwd = cwd || process.cwd();
+    var path = 'migrations/' + name + '.js';
+    log('create', join(cwd, path));
+    fs.writeFileSync(path, template);
 }
 
 /**
@@ -211,33 +162,92 @@ function create(name) {
  */
 
 function performMigration(direction, migrationName) {
-  migrate('migrations/.migrate');
-  migrations().forEach(function(path){
-    var mod = require(process.cwd() + '/' + path);
-    migrate(path, mod.up, mod.down);
-  });
+    'use strict';
+    migrate('migrations/.migrate');
+    migrations().forEach(function(path){
+        var mod = require(process.cwd() + '/' + path);
+        migrate(path, mod.up, mod.down);
+    });
 
-  var set = migrate();
+    var set = migrate();
 
-  set.on('migration', function(migration, direction){
-    log(direction, migration.title);
-  });
+    set.on('migration', function(migration, direction){
+        log(direction, migration.title);
+    });
 
-  set.on('save', function(){
-    log('migration', 'complete');
-    process.exit();
-  });
+    set.on('save', function(){
+        log('migration', 'complete');
+        process.exit();
+    });
 
-  var migrationPath = migrationName
-    ? join('migrations', migrationName)
-    : migrationName;
+    var migrationPath = migrationName[0] ?
+        join('migrations', migrationName[0]) :
+        migrationName[0];
 
-  set[direction](null, migrationPath);
+    set[direction](null, migrationPath);
 }
+
+// create ./migrations
+
+try {
+    fs.mkdirSync('migrations', 0774);
+} catch (err) {
+  // ignore
+}
+
+// commands
+
+var commands = {
+
+    /**
+     * up [name]
+     */
+
+    up: function(migrationName){
+        'use strict';
+        performMigration('up', migrationName);
+    },
+
+    /**
+    * down [name]
+    */
+
+    down: function(migrationName){
+        'use strict';
+        performMigration('down', migrationName);
+    },
+
+    /**
+    * create [title]
+    */
+
+    create: function(){
+        'use strict';
+        var timestamps = fs.readdirSync('migrations').filter(function(file){
+            return file.match(/^\d+/);
+        }).map(function(file){
+            return file.match(/^(\d+)/)[1];
+        });
+
+        var curr = (new Date()).toISOString().replace(/\.[0-9]+|[^0-9]+/g, '');
+
+        while(timestamps.indexOf(curr) > -1) {
+            curr = (parseInt(curr, 10) + 1).toString();
+        }
+
+        var title = slugify([].slice.call(arguments).join(' '));
+        title = title ? curr + '-' + title : curr;
+        create(title);
+    }
+};
+
+
 
 // invoke command
 
 var command = options.command || 'up';
-if (!(command in commands)) abort('unknown command "' + command + '"');
+if (!(command in commands)) {
+    abort('unknown command "' + command + '"');
+}
 command = commands[command];
-command.apply(this, options.args);
+command(options.args);
