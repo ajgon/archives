@@ -1,23 +1,28 @@
 {
-	"color_scheme": "Packages/Color Scheme - Default/Monokai Bright.tmTheme",
-	"theme": "Flatland Dark.sublime-theme",
-
     "caret_style": "solid",
-    "wide_caret": true,
-
+    "color_scheme": "Packages/Color Scheme - Default/Monokai Bright.tmTheme",
     "draw_white_space": "all",
+    "ensure_newline_at_eof_on_save": true,
+    "font_face": "Ubuntu Mono",
+    "font_size": 14,
+    "find_selected_text": true,
     "fold_buttons": false,
     "highlight_line": true,
-
-    "scroll_past_end": false,
     "highlight_modified_tabs": true,
-    "find_selected_text": true,
-
-    "rulers": [ 79 ],
-    "word_wrap": true,
-
+    "ignored_packages":
+    [
+        "Vintage"
+    ],
+    "rulers":
+    [
+        79
+    ],
+    "scroll_past_end": false,
     "tab_size": 4,
+    "theme": "Flatland Dark.sublime-theme",
     "translate_tabs_to_spaces": true,
     "trim_trailing_white_space_on_save": true,
-    "ensure_newline_at_eof_on_save": true
+    "wide_caret": true,
+    "word_wrap": true
 }
+
