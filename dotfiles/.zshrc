@@ -43,6 +43,8 @@ ZSH_THEME="blinks"
 plugins=(git osx battery brew bundler composer gem node npm rails ruby rvm sublime zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
+source ~/.aliases
 
 # Customize to your needs...
 export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH
+
