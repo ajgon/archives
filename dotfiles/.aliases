@@ -1,0 +1,27 @@
+# Git aliases
+alias git="hub"
+alias gpso="git push origin"
+alias gpsu="git push upstream"
+alias gplo="git pull origin"
+alias gplu="git pull upstream"
+alias glog="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+alias gs="git status"
+alias gl="git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+alias gd="git diff"
+alias gcm="git commit -m"
+alias gcam="git commit -am"
+alias gr="git remote -v"
+alias ghpages="git push origin master && git checkout gh-pages && git rebase master && git push origin gh-pages && git checkout master"
+alias gcl="git clone"
+alias gb="git branch"
+alias gba="git branch -a"
+alias gaa="git add -A"
+
+# Remove autocorrection for specific applications
+alias subl="nocorrect subl"
+
+# Functions
+function tree {
+    find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
+}
+
