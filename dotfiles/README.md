@@ -16,8 +16,11 @@ Various dotfiles used by me in most of my projects...
 * EditorConfig
 * Emmet
 * GitGutter
+* HTML Mustache
 * Phpcs
 * Prefixr
+* SCSS
 * SublimeCodeIntel
 * SublimeLinter
-* Theme - Flatland
+* Theme - itg.flat
+* Twig
