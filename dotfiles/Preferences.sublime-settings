@@ -1,28 +1,28 @@
 {
     "caret_style": "solid",
-    "color_scheme": "Packages/Color Scheme - Default/Monokai Bright.tmTheme",
+    "color_scheme": "Packages/Theme - itg.flat/itg.dark.tmTheme",
     "draw_white_space": "all",
     "ensure_newline_at_eof_on_save": true,
-    "font_face": "Ubuntu Mono",
-    "font_size": 14,
     "find_selected_text": true,
     "fold_buttons": false,
+    "font_size": 12.0,
     "highlight_line": true,
     "highlight_modified_tabs": true,
     "ignored_packages":
     [
         "Vintage"
     ],
+    "itg_small_tabs": true,
     "rulers":
     [
-        79
+        79,
+        120
     ],
     "scroll_past_end": false,
     "tab_size": 4,
-    "theme": "Flatland Dark.sublime-theme",
+    "theme": "itg.flat.dark.sublime-theme",
     "translate_tabs_to_spaces": true,
     "trim_trailing_white_space_on_save": true,
     "wide_caret": true,
     "word_wrap": true
 }
-
