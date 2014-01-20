@@ -4,6 +4,8 @@
 echo "Please install XCode from App Store, and then press ENTER"
 open /Applications/App\ Store.app
 read
+echo "Please accept XCode license terms"
+sudo xcodebuild -license
 echo "Installing XCode Command Line Tools, press ENTER when done"
 xcode-select --install
 read
