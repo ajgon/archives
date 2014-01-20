@@ -46,5 +46,4 @@ source $ZSH/oh-my-zsh.sh
 source ~/.aliases
 
 # Customize to your needs...
-export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH
-
+export PATH=/usr/local/bin:`$(brew --prefix coreutils)/libexec/gnubin`:/usr/bin:/bin:/usr/sbin:/sbin:$PATH
