@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
 # Install XCode
-echo "Please install XCode from App Store, and then press ENTER."
+echo "Please install XCode from App Store, and then press ENTER"
 open /Applications/App\ Store.app
+read
+echo "Installing XCode Command Line Tools, press ENTER when done"
+xcode-select --install
 read
 
 # Setting up .ssh
