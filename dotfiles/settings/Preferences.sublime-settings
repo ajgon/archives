@@ -1,10 +1,16 @@
 {
     "caret_style": "solid",
     "color_scheme": "Packages/Theme - itg.flat/itg.dark.tmTheme",
+    "default_encoding": "UTF-8",
     "draw_white_space": "all",
     "ensure_newline_at_eof_on_save": true,
     "find_selected_text": true,
     "fold_buttons": false,
+    "folder_exclude_patterns":
+    [
+        ".git",
+        "node_modules"
+    ],
     "font_size": 12.0,
     "highlight_line": true,
     "highlight_modified_tabs": true,
