@@ -3,6 +3,8 @@ dotfiles
 
 Various dotfiles used by me in most of my projects...
 
+A lot of scripts were taken from [those unbelievable dotfiles](https://github.com/mathiasbynens/dotfiles).
+
 ## Dependencies
 
 * [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting)
