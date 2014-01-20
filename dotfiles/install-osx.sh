@@ -7,14 +7,15 @@ read
 echo "Please accept XCode license terms"
 sudo xcodebuild -license
 echo "Installing XCode Command Line Tools, press ENTER when done"
-xcode-select --install
+xcode-select --install > /dev/null 2>&1
 read
 
 # Setting up .ssh
 echo "Configuring SSH, after pressing ENTER, please paste your private key file to the editor"
-mkdir ~/.ssh
+mkdir ~/.ssh 2> /dev/null
 read
 vim ~/.ssh/id_rsa
+chmod 600 ~/.ssh/id_rsa
 ssh-keygen -y -f ~/.ssh/id_rsa > ~/.ssh/id_rsa.pub
 
 # Install oh-my-zsh
