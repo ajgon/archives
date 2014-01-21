@@ -24,6 +24,7 @@ install mc
 install ack
 install gpg
 install git
+install hub
 install nodejs
 install mysql
 install nmap
