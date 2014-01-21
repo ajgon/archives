@@ -38,14 +38,23 @@ echo "Installing homebrew packages..."
 brew bundle ~/Brewfile
 echo "Installing cask packages..."
 ./.cask
+brew cask alfred
 
 # Configure TRIM
 echo "Configure TRIM and press ENTER when ready"
 open /Applications/Trim\ Enabler.app
+read
+
+# Configure Alfred
+# TODO: Move it to .osx
+echo "Configure ALFRED and press ENTER when ready"
+open /Applications/Alfred\ Preferences.app
+read
 
 # Setting various osx options
 echo "And now, time for some OSX magic..."
 ./.osx
+source ~/.zshrc
 
 # Work complete
 echo "Work complete"

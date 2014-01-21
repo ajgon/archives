@@ -1,7 +1,8 @@
 function installcask() {
-        brew cask install "${@}" 2> /dev/null
+        brew cask install "${@}"
 }
 
+export HOMEBREW_CASK_OPTS="--appdir=/Applications --caskroom=/usr/local/Caskroom"
 installcask alfred
 installcask cleanmymac
 installcask dash
@@ -9,7 +10,7 @@ installcask divvy
 installcask fantastical
 installcask firefox
 installcask flux
-isntallcask fontprep
+installcask fontprep
 installcask gemini
 installcask gimp
 installcask imageoptim
@@ -19,7 +20,7 @@ installcask keepassx
 installcask owncloud
 installcask picasa
 installcask skype
-isntallcask spotify
+installcask spotify
 installcask sublime-text
 installcask the-unarchiver
 installcask trim-enabler

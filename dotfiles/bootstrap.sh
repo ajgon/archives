@@ -6,6 +6,7 @@ function doIt() {
                 --exclude "README.md" --exclude "LICENSE" --exclude "install-osx.sh" \
 		-av --no-perms . ~
 #       source ~/.bash_profile
+	source ~/.zshrc
 }
 if [ "$1" == "--force" -o "$1" == "-f" ]; then
         doIt
