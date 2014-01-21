@@ -40,6 +40,18 @@ echo "Installing cask packages..."
 ./.cask
 brew cask alfred link
 
+# Install Sublime Packages
+echo "Installing Sublime Text 2 packages..."
+mkdir -p ~/Library/Application\ Support/Sublime\ Text\ 2/Installed\ Packages 2> /dev/null
+mkdir -p ~/Library/Application\ Support/Sublime\ Text\ 2/Packages/User 2> /dev/null
+wget https://sublime.wbond.net/Package%20Control.sublime-package -O ~/Library/Application\ Support/Sublime\ Text\ 2/Installed\ Packages/Package\ Control.sublime-package
+cp -r settings/Package\ Control.sublime-settings ~/Library/Application\ Support/Sublime\ Text\ 2/Packages/User/Package\ Control.sublime-settings 2> /dev/null
+cp settings/st2.icns /Applications/Sublime\ Text\ 2.app/Contents/Resources/Sublime\ Text\ 2.icns
+open /Applications/Sublime\ Text\ 2.app
+echo "Press ENTER when Sublime finished installing all the packages"
+read
+cp -r settings/Preferences.sublime-settings ~/Library/Application\ Support/Sublime\ Text\ 2/Packages/User/Preferences.sublime-settings 2> /dev/null
+
 # Configure TRIM
 echo "Configure TRIM and press ENTER when ready"
 open /Applications/Trim\ Enabler.app
