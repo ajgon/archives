@@ -29,6 +29,7 @@ ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
 brew tap phinze/cask
 brew install brew-cask
 brew tap caskroom/fonts
+brew tap caskroom/versions
 
 # Sync dotfiles
 echo "Syncing .dotfiles..."
@@ -68,6 +69,24 @@ read
 echo "And now, time for some OSX magic..."
 ./.osx
 source ~/.zshrc
+
+echo "Install and configure these apps from the App Store, then press ENTER"
+cat settings/.app-store-apps
+read
+
+e# Register propertiary applications
+OLDIFS=$IFS
+IFS="
+"
+for F in `cat settings/.register-apps`; do echo "Please register $F and press ENTER"; open /Applications/$F; read; done
+IFS=$OLDIFS
+
+cho "Configure owncloud"
+open /Applications/owncloud.app
+read
+
+echo "Configure keepassx"
+open /Application/KeePassX.app
 
 # Work complete
 echo "Work complete"

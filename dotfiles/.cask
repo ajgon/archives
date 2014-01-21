@@ -5,14 +5,12 @@ function installcask() {
 export HOMEBREW_CASK_OPTS="--appdir=/Applications --caskroom=/usr/local/Caskroom"
 installcask alfred
 installcask cleanmymac
-installcask dash
-installcask divvy
 installcask fantastical
 installcask firefox
 installcask flux
 installcask fontprep
-installcask gemini
 installcask gimp
+installcask google-chrome-canary
 installcask imageoptim
 installcask iterm2
 installcask jing
