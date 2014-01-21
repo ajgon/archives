@@ -28,6 +28,7 @@ echo "Installing homebrew and cask..."
 ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
 brew tap phinze/cask
 brew install brew-cask
+brew tap caskroom/fonts
 
 # Sync dotfiles
 echo "Syncing .dotfiles..."
