@@ -38,7 +38,7 @@ echo "Installing homebrew packages..."
 brew bundle ~/Brewfile
 echo "Installing cask packages..."
 ./.cask
-brew cask alfred
+brew cask alfred link
 
 # Configure TRIM
 echo "Configure TRIM and press ENTER when ready"
