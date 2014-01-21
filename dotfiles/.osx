@@ -604,13 +604,6 @@ defaults write com.google.Chrome.canary ExtensionInstallSources -array "https://
 #defaults write ~/Library/Preferences/org.gpgtools.gpgmail SignNewEmailsByDefault -bool false
 
 ###############################################################################
-# Sublime Text                                                                #
-###############################################################################
-
-# Install Sublime Text settings
-cp -r settings/Preferences.sublime-settings ~/Library/Application\ Support/Sublime\ Text*/Packages/User/Preferences.sublime-settings 2> /dev/null
-
-###############################################################################
 # Twitter.app                                                                 #
 ###############################################################################
 

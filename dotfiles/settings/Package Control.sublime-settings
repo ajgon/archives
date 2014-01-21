@@ -1,0 +1,19 @@
+{
+	"installed_packages":
+	[
+		"AdvancedNewFile",
+		"ApplySyntax",
+		"BracketHighlighter",
+		"DocBlockr",
+		"EditorConfig",
+		"GitGutter",
+		"HTML Mustache",
+		"Package Control",
+		"Phpcs",
+		"SCSS",
+		"SublimeCodeIntel",
+		"SublimeLinter",
+		"Theme - itg.flat",
+		"Twig"
+	]
+}
