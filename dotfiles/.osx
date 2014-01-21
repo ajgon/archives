@@ -515,6 +515,13 @@ defaults write com.apple.terminal StringEncodings -array 4
 # Don’t display the annoying prompt when quitting iTerm
 defaults write com.googlecode.iterm2 PromptOnQuit -bool false
 
+# Set default directory for preferences before setting them
+defaults write com.googlecode.iterm2 NSNavLastRootDirectory -string "~/Library/Preferences"
+
+# Set default preferences
+cp settings/Preferences/com.googlecode.iterm2.plist ~/Library/Preferences/com.googlecode.iterm2.plist
+plutil -convert binary1 ~/Library/Preferences/com.googlecode.iterm2.plist
+
 ###############################################################################
 # Time Machine                                                                #
 ###############################################################################
@@ -632,6 +639,13 @@ defaults write com.twitter.twitter-mac HideInBackground -bool true
 # Alfred 2                                                                    #
 ###############################################################################
 defaults write com.runningwithcrayons.Alfred-Preferences features.filesearch.find -dict enabled -bool true keyword -string f
+
+###############################################################################
+# Other preferences                                                           #
+###############################################################################
+
+#Divvy
+cp -f settings/Preferences/com.mizage.direct.Divvy.plist ~/Library/Preferences/
 
 ###############################################################################
 # Kill affected applications                                                  #

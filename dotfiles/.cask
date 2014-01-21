@@ -26,3 +26,6 @@ installcask the-unarchiver
 installcask trim-enabler
 #installcask vitamin-r
 installcask vlc
+
+# Fonts
+installcask font-ubuntu
