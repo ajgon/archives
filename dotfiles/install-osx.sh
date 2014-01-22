@@ -48,6 +48,7 @@ mkdir -p ~/Library/Application\ Support/Sublime\ Text\ 2/Installed\ Packages 2> 
 mkdir -p ~/Library/Application\ Support/Sublime\ Text\ 2/Packages/User 2> /dev/null
 wget https://sublime.wbond.net/Package%20Control.sublime-package -O ~/Library/Application\ Support/Sublime\ Text\ 2/Installed\ Packages/Package\ Control.sublime-package
 cp -r settings/Package\ Control.sublime-settings ~/Library/Application\ Support/Sublime\ Text\ 2/Packages/User/Package\ Control.sublime-settings 2> /dev/null
+cp -f settings/Marked.sublime-build ~/Library/Application\ Support/Sublime\ Text\ 2/Packages/User/
 cp settings/st2.icns /Applications/Sublime\ Text\ 2.app/Contents/Resources/Sublime\ Text\ 2.icns
 open /Applications/Sublime\ Text\ 2.app
 echo "Press ENTER when Sublime finished installing all the packages"
@@ -69,6 +70,10 @@ read
 echo "And now, time for some OSX magic..."
 ./.osx
 source ~/.zshrc
+
+echo "Installing node apps"
+npm install -g grunt-cli
+npm install -g bower
 
 echo "Install and configure these apps from the App Store, then press ENTER"
 cat settings/.app-store-apps
