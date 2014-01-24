@@ -75,6 +75,9 @@ echo "Installing node apps"
 npm install -g grunt-cli
 npm install -g bower
 
+echo "Installing RVM and Rubies"
+\curl -sSL https://get.rvm.io | bash -s stable --ruby
+
 echo "Install and configure these apps from the App Store, then press ENTER"
 cat settings/.app-store-apps
 read

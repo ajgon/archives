@@ -21,3 +21,6 @@ Icon
 ### IDEA IDE ###
 # PHPStorm project files
 .idea
+
+### Composer ###
+composer.phar
