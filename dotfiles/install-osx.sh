@@ -68,7 +68,7 @@ read
 
 # Setting various osx options
 echo "And now, time for some OSX magic..."
-./.osx
+#./.osx
 source ~/.zshrc
 
 echo "Installing node apps"
