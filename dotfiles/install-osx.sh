@@ -82,20 +82,22 @@ echo "Install and configure these apps from the App Store, then press ENTER"
 cat settings/.app-store-apps
 read
 
-e# Register propertiary applications
+# Register propertiary applications
 OLDIFS=$IFS
 IFS="
 "
 for F in `cat settings/.register-apps`; do echo "Please register $F and press ENTER"; open /Applications/$F; read; done
 IFS=$OLDIFS
 
-cho "Configure owncloud"
+echo "Configure owncloud"
 open /Applications/owncloud.app
 read
 
 echo "Configure keepassx"
 open /Application/KeePassX.app
 
+echo "Install Alfred extensions"
+for a in alfred/*.alfredworkflow; do open $a; echo "Installing $a, press enter, when done"; read; done
 # Work complete
 echo "Work complete"
 say -v zarvox "Work complete"

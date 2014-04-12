@@ -20,9 +20,10 @@ installcask picasa
 installcask skype
 installcask spotify
 installcask sublime-text
+installcask synergy
 installcask the-unarchiver
 installcask trim-enabler
-#installcask vitamin-r
+installcask vitamin-r
 installcask vlc
 
 # Fonts
