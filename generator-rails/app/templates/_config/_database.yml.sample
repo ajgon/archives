@@ -1,0 +1,23 @@
+development:
+  adapter: {{ dbAdapter }}
+  encoding: utf8
+  database: {{ projectSlug }}_development
+  pool: 5
+  username: {{ username }}
+  password:
+
+test:
+  adapter: {{ dbAdapter }}
+  encoding: utf8
+  database: {{ projectSlug }}_test
+  pool: 5
+  username: {{ username }}
+  password:
+
+production:
+  adapter: {{ dbAdapter }}
+  encoding: utf8
+  database: {{ projectSlug }}_production
+  pool: 5
+  username: {{ username }}
+  password:

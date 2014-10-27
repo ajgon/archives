@@ -61,7 +61,8 @@ group :development, :test do
   gem 'gemsurance', require: false
   gem 'overcommit', require: false
   gem 'rubocop', require: false
-  gem 'sass-lint', require: false
+  gem 'scss-lint', require: false
+  gem 'rack-mini-profiler', require: false
 end
 
 # extra

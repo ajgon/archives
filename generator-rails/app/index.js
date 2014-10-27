@@ -6,7 +6,6 @@ var extend = require('extend');
 var path = require('path');
 var yeoman = require('yeoman-generator');
 var yosay = require('yosay');
-var sh = require('execSync');
 
 var RailsGenerator = yeoman.generators.Base.extend({
   initializing: function () {
@@ -20,7 +19,6 @@ var RailsGenerator = yeoman.generators.Base.extend({
       return Handlebars.compile(body)(options);
     };
   },
-
   prompting: function () {
     var done = this.async();
 
@@ -34,6 +32,7 @@ var RailsGenerator = yeoman.generators.Base.extend({
       type: 'input',
       name: 'project',
       message: 'What is the project name?',
+      default: process.cwd().split(path.sep).pop(),
       validate: function(value) {
         return value.length > 0;
       }
@@ -108,6 +107,9 @@ var RailsGenerator = yeoman.generators.Base.extend({
 
     this.prompt(prompts, function (props) {
       this.props = props;
+      props['rdbms'] = props['rdbms'].length == 0 ? ['sqlite3'] : props['rdbms'];
+      this.props.username = props['rdbms'] == 'mysql2' ? 'root' : Helpers.userId();
+      this.props.dbAdapter = [props['rdbms'].reverse()[0].replace('pg', 'postgresql')];
 
       done();
     }.bind(this));
@@ -118,9 +120,11 @@ var RailsGenerator = yeoman.generators.Base.extend({
       this.dest.mkdir('bin');
       this.dest.mkdir('.git-hooks');
       this.dest.mkdir('.git-hooks/pre_commit');
+      this.dest.mkdir('config');
       this.copy('_Gemfile', 'Gemfile', this.parseFile.bind(this));
       this.copy('_package.json', 'package.json', this.parseFile.bind(this));
       this.src.copy('git-hooks/_pre_commit/_rspec.rb', '.git-hooks/pre_commit/rspec.rb');
+      this.copy('_config/_database.yml.sample', 'config/database.yml.sample', this.parseFile.bind(this));
     },
 
     projectfiles: function () {
@@ -140,10 +144,26 @@ var RailsGenerator = yeoman.generators.Base.extend({
   },
 
   end: function () {
-    this.installDependencies();
-    sh.exec('ln -s node_modules/jscs/bin/jscs bin/jscs');
-    sh.exec('ln -s node_modules/jshint/bin/jshint bin/jshint');
-    sh.exec('direnv allow .');
+    var self = this;
+    //this.installDependencies();
+    Helpers.run('ln', ['-s', '../node_modules/jscs/bin/jscs', 'bin/jscs']).then(function (res) {
+      return Helpers.run('ln', ['-s', '../node_modules/jshint/bin/jshint', 'bin/jshint']);
+    }).then(function (res) {
+      return Helpers.run('direnv', ['allow', '.']);
+    }).then(function (res) {
+      return Helpers.run('rvm', ['use', '.']);
+    }).then(function (res) {
+      return Helpers.run('bundle', ['install']);
+    }).then(function (res) {
+      var railsOpts = ['new', '.', '--skip-gemfile', '--skip-bundle', '--skip-git', '--skip-javascript', '--skip'];
+      if (self.props['test'] == 'rspec') {
+        railsOpts.push('--skip-test-unit');
+      }
+      railsOpts.push('-p');
+      return Helpers.run('rails', railsOpts);
+    }).fail(function (error) {
+      console.error(error);
+    });
   }
 });
 
