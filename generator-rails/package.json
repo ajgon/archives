@@ -1,6 +1,6 @@
 {
   "name": "generator-rails",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Yeoman generator",
   "license": "MIT",
   "main": "app/index.js",
@@ -8,7 +8,7 @@
   "author": {
     "name": "Igor Rzegocki",
     "email": "ajgon@irgon.com",
-    "url": "https://github.com/ajgon"
+    "url": "https://rzegocki.pl/"
   },
   "engines": {
     "node": ">=0.10.0"

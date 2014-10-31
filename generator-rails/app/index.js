@@ -1,8 +1,6 @@
 'use strict';
 var Handlebars = require('handlebars');
 var Helpers = require('./helpers')(Handlebars);
-var util = require('util');
-var extend = require('extend');
 var path = require('path');
 var yeoman = require('yeoman-generator');
 var yosay = require('yosay');
@@ -10,7 +8,6 @@ var chalk = require('chalk');
 
 var RailsGenerator = yeoman.generators.Base.extend({
   initializing: function () {
-    var self = this;
     this.pkg = require('../package.json');
     this.parseFile = function(body) {
       return Handlebars.compile(body)(this.props);
@@ -119,13 +116,12 @@ var RailsGenerator = yeoman.generators.Base.extend({
 
     this.prompt(prompts, function (props) {
       this.props = props;
-      props['rdbms'] = props['rdbms'].length == 0 ? ['sqlite3'] : props['rdbms'];
-      this.props.dbUsername = props['rdbms'] == 'mysql2' ? 'root' : Helpers.userId();
-      this.props.dbAdapter = [props['rdbms'].reverse()[0].replace('pg', 'postgresql')];
-      this.props.email = props['email'].replace(/@/, ' [at] ');
-      this.props.rubyVersion = Helpers.recentRubyVersion(),
+      props.rdbms = props.rdbms.length === 0 ? ['sqlite3'] : props.rdbms;
+      this.props.dbUsername = props.rdbms === 'mysql2' ? 'root' : Helpers.userId();
+      this.props.dbAdapter = [props.rdbms.reverse()[0].replace('pg', 'postgresql')];
+      this.props.email = props.email.replace(/@/, ' [at] ');
+      this.props.rubyVersion = Helpers.recentRubyVersion();
       this.props.projectSlug = this.props.project.toLowerCase().replace(/[^a-z]+/g, '');
-
       done();
     }.bind(this));
   },
@@ -145,7 +141,7 @@ var RailsGenerator = yeoman.generators.Base.extend({
       this.copy('_package.json', 'package.json', this.parseFile.bind(this));
       this.copy('ruby-version', '.ruby-version', this.parseFile.bind(this));
       this.copy('ruby-gemset', '.ruby-gemset', this.parseFile.bind(this));
-      switch(this.props['template']) {
+      switch(this.props.template) {
         case 'erb':
           this.copy('_app/_views/_layouts/_application.html.erb', 'app/views/layouts/application.html.erb', this.parseFile.bind(this));
         break;
@@ -179,83 +175,83 @@ var RailsGenerator = yeoman.generators.Base.extend({
 
   end: function () {
     var self = this;
-    var rvmVersion = 'ruby-' + self.props['rubyVersion'] + '@' + self.props['projectSlug'];
+    var rvmVersion = 'ruby-' + self.props.rubyVersion + '@' + self.props.projectSlug;
     self.installDependencies();
-    Helpers.run('true').then(function (res) {
+    Helpers.run('true').then(function () {
       if (Helpers.isDirenv()) {
-        process.stdout.write(chalk.blue('Generating symlinks' + "\n"));
+        process.stdout.write(chalk.blue('Generating symlinks' + '\n'));
         return Helpers.run('ln', ['-s', '../node_modules/jscs/bin/jscs', 'bin/jscs']);
       }
       return Helpers.run('true');
-    }).then(function (res) {
+    }).then(function () {
       if (Helpers.isDirenv()) {
         return Helpers.run('ln', ['-s', '../node_modules/jshint/bin/jshint', 'bin/jshint']);
       }
       return Helpers.run('true');
-    }).then(function (res) {
+    }).then(function () {
       if (Helpers.isDirenv()) {
         return Helpers.run('ln', ['-s', '../node_modules/svgo/bin/svgo', 'bin/svgo']);
       }
       return Helpers.run('true');
-    }).then(function (res) {
+    }).then(function () {
       if (Helpers.isDirenv()) {
         return Helpers.run('direnv', ['allow', '.']);
       }
       return Helpers.run('true');
-    }).then(function (res) {
-      process.stdout.write(chalk.blue('Initializing git' + "\n"));
+    }).then(function () {
+      process.stdout.write(chalk.blue('Initializing git' + '\n'));
       return Helpers.run('git', ['init']);
-    }).then(function (res) {
-      process.stdout.write(chalk.blue('Installing gem dependencies' + "\n"));
+    }).then(function () {
+      process.stdout.write(chalk.blue('Installing gem dependencies' + '\n'));
       return Helpers.run('rvm', [rvmVersion, 'exec','bundle']);
-    }).then(function (res) {
+    }).then(function () {
       var railsOpts = ['new', '.', '--skip-gemfile', '--skip-bundle', '--skip-git', '--skip-javascript', '--skip'];
-      process.stdout.write(chalk.blue('Initializing Rails' + "\n"));
-      if (self.props['test'] == 'rspec') {
+      process.stdout.write(chalk.blue('Initializing Rails' + '\n'));
+      if (self.props.test === 'rspec') {
         railsOpts.push('--skip-test-unit');
       }
       return Helpers.run('rvm', [rvmVersion, 'exec', 'rails'].concat(railsOpts));
-    }).then(function (res) {
-      if (self.props['template'] != 'erb') {
-        process.stdout.write(chalk.blue('Cleanup' + "\n"));
+    }).then(function () {
+      if (self.props.template !== 'erb') {
+        process.stdout.write(chalk.blue('Cleanup' + '\n'));
         return Helpers.run('rm', ['app/views/layouts/application.html.erb']);
       } else {
         return Helpers.run('true');
       }
-    }).then(function (res) {
-      if (self.props['test'] != 'rspec') {
-        process.stdout.write(chalk.blue('Generating RSPEC scaffolding' + "\n"));
+    }).then(function () {
+      if (self.props.test !== 'rspec') {
+        process.stdout.write(chalk.blue('Generating RSPEC scaffolding' + '\n'));
         return Helpers.run('rvm', [rvmVersion, 'exec','rails', 'generate', 'rspec:install']);
       } else {
         return Helpers.run('true');
       }
-    }).then(function (res) {
-      if (self.props['extra'].indexOf('devise') !== -1) {
-        process.stdout.write(chalk.blue('Running DEVISE Initializer' + "\n"));
+    }).then(function () {
+      if (self.props.extra.indexOf('devise') !== -1) {
+        process.stdout.write(chalk.blue('Running DEVISE Initializer' + '\n'));
         return Helpers.run('rvm', [rvmVersion, 'exec','rails', 'generate', 'devise:install']);
       } else {
         return Helpers.run('true');
       }
-    }).then(function (res) {
-      if (self.props['extra'].indexOf('activeadmin') !== -1) {
-        process.stdout.write(chalk.blue('Running Active Admin Initializer' + "\n"));
+    }).then(function () {
+      if (self.props.extra.indexOf('activeadmin') !== -1) {
+        process.stdout.write(chalk.blue('Running Active Admin Initializer' + '\n'));
         return Helpers.run('rvm', [rvmVersion, 'exec','rails', 'generate', 'active_admin:install']);
       } else {
         return Helpers.run('true');
       }
-    }).then(function (res) {
-      if (self.props['extra'].indexOf('kaminari') !== -1) {
-        process.stdout.write(chalk.blue('Running Kaminari Initializer' + "\n"));
+    }).then(function () {
+      if (self.props.extra.indexOf('kaminari') !== -1) {
+        process.stdout.write(chalk.blue('Running Kaminari Initializer' + '\n'));
         return Helpers.run('rvm', [rvmVersion, 'exec','rails', 'generate', 'kaminari:config']);
       } else {
         return Helpers.run('true');
       }
-    }).then(function (res) {
-      process.stdout.write(chalk.blue('Activating overcommit' + "\n"));
+    }).then(function () {
+      process.stdout.write(chalk.blue('Activating overcommit' + '\n'));
       return Helpers.run('rvm', [rvmVersion, 'exec','overcommit', '-f']);
-    }).then(function (res) {
-      process.stdout.write(chalk.red('Don\'t forget to ' + chalk.green('rvm use .') + '!' + "\n"));
-      process.stdout.write(chalk.red('Everything ready! Let\'s write some code!' + "\n"));
+    }).then(function () {
+      process.stdout.write(chalk.red('Don\'t forget to ' + chalk.green('rvm use .') + '!' + '\n'));
+      process.stdout.write(chalk.red('Everything ready! Let\'s write some code!' + '\n'));
     }).fail(function (error) {
       console.error(error);
     });

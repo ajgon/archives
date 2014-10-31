@@ -2,7 +2,6 @@
 var spawn = require('child_process').spawn;
 var sh = require('execSync');
 var Q = require('q');
-var chalk = require('chalk');
 
 String.prototype.trim = function() { return this.replace(/^\s+|\s+$/g, ''); };
 
@@ -13,9 +12,9 @@ var Helpers = {
     switch(osType) {
       case 'Darwin':
         this.os.name = 'osx';
-        this.os.version = sh.exec('sw_vers -productVersion').stdout.trim();;
+        this.os.version = sh.exec('sw_vers -productVersion').stdout.trim();
         this.os.arch = sh.exec('uname -m').stdout.trim();
-    };
+    }
     if (this.os.name) {
       return sh.exec('curl -L http://rvm.io/binaries/' + this.os.name + '/' + this.os.version + '/' + this.os.arch).stdout.match(/ruby-[0-9]\.[0-9]\.[0-9]/g).sort().reverse()[0].replace('ruby-', '');
     }
@@ -55,6 +54,7 @@ var Helpers = {
 };
 
 module.exports = function(Handlebars) {
+  /*jshint eqeqeq: false */
   Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
     switch (operator) {
         case '==':
@@ -80,6 +80,7 @@ module.exports = function(Handlebars) {
         default:
             return options.inverse(this);
     }
+    /*jshint eqeqeq: true */
   });
   return Helpers;
 };
