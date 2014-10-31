@@ -12,7 +12,7 @@ gem '{{ this }}'
 {{#ifCond template '!=' 'erb'}}
 # Templates
 gem '{{ template }}'
-{{#ifCond template '==' 'haml-rails'}}
+{{#ifCond template '==' 'haml'}}
 gem 'haml-lint'
 {{/ifCond}}
 {{/ifCond}}
@@ -63,6 +63,7 @@ group :development, :test do
   gem 'rubocop', require: false
   gem 'scss-lint', require: false
   gem 'rack-mini-profiler', require: false
+  gem 'image_optim', require: false
 end
 
 # extra

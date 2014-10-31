@@ -3,7 +3,7 @@ development:
   encoding: utf8
   database: {{ projectSlug }}_development
   pool: 5
-  username: {{ username }}
+  username: {{ dbUsername }}
   password:
 
 test:
@@ -11,7 +11,7 @@ test:
   encoding: utf8
   database: {{ projectSlug }}_test
   pool: 5
-  username: {{ username }}
+  username: {{ dbUsername }}
   password:
 
 production:
@@ -19,5 +19,5 @@ production:
   encoding: utf8
   database: {{ projectSlug }}_production
   pool: 5
-  username: {{ username }}
+  username: {{ dbUsername }}
   password:

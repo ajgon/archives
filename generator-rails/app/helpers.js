@@ -2,6 +2,7 @@
 var spawn = require('child_process').spawn;
 var sh = require('execSync');
 var Q = require('q');
+var chalk = require('chalk');
 
 String.prototype.trim = function() { return this.replace(/^\s+|\s+$/g, ''); };
 
@@ -23,6 +24,15 @@ var Helpers = {
   userId: function() {
     return sh.exec('whoami').stdout.trim();
   },
+  gitUsername: function() {
+    return sh.exec('git config --get user.name').stdout.trim();
+  },
+  gitEmail: function() {
+    return sh.exec('git config --get user.email').stdout.trim();
+  },
+  isDirenv: function() {
+    return sh.run('direnv > /dev/null 2>&1') === 0;
+  },
   run: function(cmd, args) {
     var sp;
     var deferred = Q.defer();
@@ -31,11 +41,13 @@ var Helpers = {
     sp.stdout.on('data', function (data) {
       process.stdout.write(data.toString());
     });
+    sp.stderr.on('data', function (data) {
+      process.stderr.write(data.toString());
+    });
     sp.on('exit', function (code) {
       if (code === 0) {
         return deferred.resolve(code);
       }
-      console.log('reject');
       return deferred.reject(new Error('Command failed'));
     });
     return deferred.promise;

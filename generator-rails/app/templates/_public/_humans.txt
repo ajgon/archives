@@ -1,0 +1,3 @@
+/* TEAM */
+  Lead Developer: {{ name }}
+  Contact: {{ email }}
