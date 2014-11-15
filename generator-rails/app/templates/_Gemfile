@@ -61,6 +61,7 @@ group :development, :test do
   gem 'gemsurance', require: false
   gem 'overcommit', require: false
   gem 'rubocop', require: false
+  gem 'reek', require: false
   gem 'scss-lint', require: false
   gem 'rack-mini-profiler', require: false
   gem 'image_optim', require: false
