@@ -12,7 +12,7 @@ var Helpers = {
     switch(osType) {
       case 'Darwin':
         this.os.name = 'osx';
-        this.os.version = sh.exec('sw_vers -productVersion').stdout.trim();
+        this.os.version = sh.exec('sw_vers -productVersion').stdout.trim().replace(/(^[0-9]+\.[0-9]+).*/, '$1');
         this.os.arch = sh.exec('uname -m').stdout.trim();
     }
     if (this.os.name) {
