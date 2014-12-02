@@ -117,6 +117,9 @@ var RailsGenerator = yeoman.generators.Base.extend({
     this.prompt(prompts, function (props) {
       this.props = props;
       props.rdbms = props.rdbms.length === 0 ? ['sqlite3'] : props.rdbms;
+      if (props.extra.indexOf('devise') !== -1 && props.rdbms.indexOf('sqlite3') === -1) {
+        this.props.rdbms.push('sqlite3');
+      }
       this.props.dbUsername = props.rdbms === 'mysql2' ? 'root' : Helpers.userId();
       this.props.dbAdapter = [props.rdbms.reverse()[0].replace('pg', 'postgresql')];
       this.props.email = props.email.replace(/@/, ' [at] ');
@@ -138,7 +141,6 @@ var RailsGenerator = yeoman.generators.Base.extend({
       this.dest.mkdir('public');
 
       this.copy('_Gemfile', 'Gemfile', this.parseFile.bind(this));
-      this.copy('_package.json', 'package.json', this.parseFile.bind(this));
       this.copy('ruby-version', '.ruby-version', this.parseFile.bind(this));
       this.copy('ruby-gemset', '.ruby-gemset', this.parseFile.bind(this));
       switch(this.props.template) {
@@ -158,7 +160,6 @@ var RailsGenerator = yeoman.generators.Base.extend({
 
     projectfiles: function () {
       this.src.copy('editorconfig', '.editorconfig');
-      this.src.copy('envrc', '.envrc');
       this.src.copy('gitignore', '.gitignore');
       this.src.copy('jshintrc', '.jshintrc');
       this.src.copy('overcommit.yml', '.overcommit.yml');
@@ -176,28 +177,9 @@ var RailsGenerator = yeoman.generators.Base.extend({
   end: function () {
     var self = this;
     var rvmVersion = 'ruby-' + self.props.rubyVersion + '@' + self.props.projectSlug;
-    self.installDependencies();
     Helpers.run('true').then(function () {
-      if (Helpers.isDirenv()) {
-        process.stdout.write(chalk.blue('Generating symlinks' + '\n'));
-        return Helpers.run('ln', ['-s', '../node_modules/jscs/bin/jscs', 'bin/jscs']);
-      }
-      return Helpers.run('true');
-    }).then(function () {
-      if (Helpers.isDirenv()) {
-        return Helpers.run('ln', ['-s', '../node_modules/jshint/bin/jshint', 'bin/jshint']);
-      }
-      return Helpers.run('true');
-    }).then(function () {
-      if (Helpers.isDirenv()) {
-        return Helpers.run('ln', ['-s', '../node_modules/svgo/bin/svgo', 'bin/svgo']);
-      }
-      return Helpers.run('true');
-    }).then(function () {
-      if (Helpers.isDirenv()) {
-        return Helpers.run('direnv', ['allow', '.']);
-      }
-      return Helpers.run('true');
+      process.stdout.write(chalk.blue('Creating rvm environment' + '\n'));
+      return Helpers.run('rvm', ['ruby-' + self.props.rubyVersion, 'do', 'rvm', 'gemset', 'create', self.props.projectSlug]);
     }).then(function () {
       process.stdout.write(chalk.blue('Initializing git' + '\n'));
       return Helpers.run('git', ['init']);

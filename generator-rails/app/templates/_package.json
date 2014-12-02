@@ -1,9 +1,0 @@
-{
-  "name": "{{ projectSlug }}",
-  "version": "0.0.1",
-  "devDependencies": {
-    "jscs": "*",
-    "jshint": "*",
-    "svgo": "*"
-  }
-}
