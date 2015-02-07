@@ -1,0 +1,32 @@
+<div id="dashboard">
+  <div class="page-header">
+    <h1>Dashboard</h1>
+  </div>
+  <% admin_controllers.each_slice(3).each do |controller_group| %>
+    <div class="row-fluid">
+      <% controller_group.each do |controller| %>
+        <div class="span4">
+          <table class="table table-striped table-bordered">
+            <caption>Last <%= humanize(controller.controller_name) %></caption>
+            <thead>
+              <tr>
+                <% model_for(controller).columns(:admin => true)[0..3].each do |column| %>
+                    <%= render 'headers', :column => column %>
+                <% end %>
+              </tr>
+            </thead>
+            <tbody>
+              <% model_for(controller).last(5).each do |item| %>
+                <tr data-id="<%= item.id %>" data-url="<%= polymorphic_path(item, :action => 'admin') %>">
+                  <% item.attributes(:admin => true).keys[0..3].each do |key| %>
+                    <td><%= raw(admin_parse_value(item, key)) %></td>
+                  <% end %>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

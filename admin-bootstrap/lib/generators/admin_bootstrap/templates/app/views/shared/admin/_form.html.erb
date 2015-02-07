@@ -1,0 +1,12 @@
+<%= tinymce %>
+<%= f.inputs :except => {:type => :binary} %>
+
+<% f.object.class.admin_nested_tables.each do |field| %>
+    <h2 class="offset2 span10"><%= field.to_s.humanize %></h2>
+    <%= f.semantic_fields_for field do |item| %>
+        <%= render 'subform_fields', :f => item %>
+    <% end %>
+    <div class="cocoon-links">
+      <%= link_to_add_association 'Add ' + field.to_s.classify, f, field, {:partial => 'subform_fields', :class => 'btn btn-success offset2'} %>
+    </div>
+<% end %>

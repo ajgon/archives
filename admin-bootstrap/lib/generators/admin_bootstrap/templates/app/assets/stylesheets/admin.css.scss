@@ -1,0 +1,227 @@
+/* = require libraries/bootstrap
+ * = require libraries/bootstrap-responsive
+ * = require formtastic-bootstrap
+ * = require libraries/jquery-ui.bootstrap
+ * = require libraries/jquery-ui.timepicker
+ * = require libraries/prettify
+ * = require_tree ./admin/plugins */
+
+body {
+  padding-top: 60px;
+  background-image: image-url('admin/grid-18px-masked.png');
+  background-position: 0 40px;
+  background-repeat: repeat-x;
+}
+
+div.dataTables_length {
+  label {
+    float: left;
+    text-align: left;
+  }
+  select {
+    width: 75px;
+  }
+}
+
+div.dataTables_filter {
+  label {
+    float: right;
+  }
+}
+
+div.dataTables_info {
+  padding-top: 8px;
+}
+
+div.dataTables_paginate {
+  float: right;
+  margin: 0;
+}
+
+div.DataTables_action {
+  width: 160px;
+}
+
+.alert-alert {
+  background-color: #f2dede;
+  border-color: #eed3d7;
+  color: #b94a48;
+}
+
+table.table {
+  margin-bottom: 6px;
+  clear: both;
+  display: table !important;
+  thead {
+    .sort {
+      cursor: pointer;
+      *cursor: hand;
+      background-repeat: no-repeat;
+      background-position: center right;
+    }
+    .sorting {
+      @extend .sort;
+      background-image: image-url('admin/sort_both.png');
+    }
+    .sorting_asc {
+      @extend .sort;
+      background-image: image-url('admin/sort_asc.png');
+    }
+    .sorting_desc {
+      @extend .sort;
+      background-image: image-url('admin/sort_desc.png');
+    }
+    .sorting_asc_disabled {
+      @extend .sort;
+      background-image: image-url('admin/sort_asc_disabled.png');
+    }
+    .sorting_desc_disabled {
+      @extend .sort;
+      background-image: image-url('admin/sort_desc_disabled.png');
+    }
+  }
+  tr.highlight.odd {
+    td {
+      background: #E5E8FF;
+    }
+  }
+  tr.highlight.even {
+    td {
+      background: #F5F5FF;
+    }
+  }
+  th, td {
+    background: #fff;
+  }
+  td {
+    div {
+      height: 34px;
+      overflow: hidden;
+      text-ellipsis: ellipsis;
+    }
+    div.image {
+      height: auto;
+    }
+    div[data-value="true"],
+    div[data-value="false"] {
+      text-indent: -1000em;
+      background: image-url('admin/glyphicons-halflings-white.png') no-repeat;
+      display: inline-block;
+      height: 14px;
+      line-height: 14px;
+      vertical-align: text-bottom;
+      width: 14px;
+      color: #fff;
+      -moz-border-radius: 9px;
+      -webkit-border-radius: 9px;
+      -o-border-radius: 9px;
+      -ms-border-radius: 9px;
+      border-radius: 9px;
+    }
+    div[data-value="true"] {
+      background-color: #468847;
+      background-position: -192px -96px;
+    }
+    div[data-value="false"] {
+      background-color: #B94A48;
+      background-position: -216px -96px;
+    }
+  }
+  td:last-child {
+    div {
+      overflow: visible;
+      height: auto;
+    }
+  }
+}
+
+.pagination .disabled span,
+.pagination .disabled a,
+.pagination li span
+.pagination li a {
+  background: #fff;
+}
+
+.editform {
+  max-width: 1260px;
+  margin: 0 auto;
+  textarea {
+    resize: vertical;
+    height: 90px;
+    min-height: 90px;
+  }
+  .tinymce {
+    height: 360px;
+  }
+  h1 {
+    margin-bottom: 20px;
+  }
+}
+
+.showitem {
+  max-width: 1260px;
+  margin: 0 auto;
+  h1, h2, h3 {
+    margin-bottom: 20px;
+  }
+}
+
+.wysiwyg {
+  .code, .raw {
+    position: relative;
+    margin-left: 0;
+  }
+  a {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    display: none;
+  }
+  :hover a {
+    display: block;
+  }
+}
+
+.nested-fields {
+  clear: left;
+  position: relative;
+  .btn-danger {
+    position: absolute;
+    top: 0;
+    right: -5%;
+  }
+}
+
+.cocoon-links {
+  margin-bottom: 20px;
+}
+
+#dashboard {
+  .row-fluid {
+    margin-bottom: 20px;
+  }
+}
+
+.popover.fade {
+  .popover-inner {
+    h3 {
+      display: none;
+    }
+  }
+}
+
+.loading {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff image-url('admin/loading.gif');
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.7;
+  filter: alpha(opacity=70);
+  display: none;
+}

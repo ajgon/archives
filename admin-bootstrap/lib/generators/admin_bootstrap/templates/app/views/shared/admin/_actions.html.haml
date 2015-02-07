@@ -1,0 +1,11 @@
+- links = [:edit, :show, :destroy] - Array(resource.class.admin_option_value(:disabled_actions)) + Array(resource.class.admin_option_value(:additional_actions))
+- if links.size > 0
+  .btn-group.DataTables_action
+    = link_to links.first.to_s.camelize, {:action => links.first, :id => resource.id}.merge(links.first == :delete ? {:method => :delete} : {}), {:class => 'btn btn-primary'}
+    - if links.size > 1
+      %a.btn.btn-primary.dropdown-toggle{'data-toggle' => 'dropdown', :href => '#'}
+        %span.caret
+      %ul.dropdown-menu
+        - links[1..-1].each do |link|
+          %li
+            = link_to link.to_s.camelize, {:action => link, :id => resource.id}.merge(link == :destroy ? {:method => :delete} : {})

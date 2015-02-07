@@ -1,0 +1,39 @@
+!!!
+%html
+  %head
+    %title Admin Panel
+    = stylesheet_link_tag "admin", :media => "all"
+    = tinymce_assets
+    = javascript_include_tag "admin"
+    :javascript
+      var RESOURCE = '#{params[:action]}';
+      var MODEL = '#{model_for((params[:controller] + '_controller').classify)}';
+      var ID = '#{@resource ? @resource.id : ''}';
+    = csrf_meta_tags
+
+  %body
+    .navbar.navbar-fixed-top
+      .navbar-inner
+        .container
+          %a.brand{:href => root_path} #{Rails.application.class.parent_name}
+          .nav-collapse
+            %ul.nav
+              %li
+                %a{:href => admin_root_path} Dashboard
+              %li.dropdown
+                %a.dropdown-toggle{'data-toggle' => 'dropdown', :href => '#'}
+                  Settings
+                  %b.caret
+                %ul.dropdown-menu
+                  - @settings_paths.each do |controller|
+                    %li
+                      = link_to(controller[:name], controller[:params])
+    .container-fluid
+      .row-fluid#flash
+        - flash.each do |name, msg|
+          %div{:class => "alert alert-#{name} fade in"}
+            %a.close{'data-dismiss' => 'alert', :href => '#'}
+              &times;
+            = msg
+      .row-fluid
+        = yield
