@@ -1,0 +1,28 @@
+.page {
+  background: #2f3238;
+  padding: 20px 0;
+  position: relative;
+  z-index: 99;
+}
+
+.page-alternate {
+  background: #26292e;
+  padding: 100px 0;
+  position: relative;
+  z-index: 99;
+}
+
+.title-page {
+  text-align: center;
+
+  .title {
+    font-size: 48px;
+    margin: 0 0 10px;
+  }
+
+  .title-description {
+    font-size: 24px;
+    font-weight: 200;
+    margin: 0;
+  }
+}

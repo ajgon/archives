@@ -1,0 +1,8 @@
+source 'https://rubygems.org'
+ruby '2.2.0'
+
+group :development do
+  gem 'overcommit', require: false
+  gem 'image_optim', require: false
+  gem 'scss-lint', require: false
+end

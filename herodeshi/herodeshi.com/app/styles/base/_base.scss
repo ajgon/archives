@@ -1,0 +1,141 @@
+html,
+body {
+  height: 100%;
+}
+
+html {
+  font-size: 100%;
+  text-size-adjust: 100%;
+  width: 100%;
+}
+
+body {
+  background: #2f3238;
+  color: #7f8289;
+  font-family: 'Titillium Web', sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 28px;
+}
+
+a {
+  color: #de5e60;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color .1s linear 0s;
+
+  img {
+    border: 0;
+  }
+
+  > img {
+    vertical-align: bottom;
+  }
+}
+
+a:hover,
+a:active,
+a:focus {
+  color: #fff;
+  outline: 0;
+  text-decoration: none;
+}
+
+img {
+  max-width: none;
+}
+
+strong {
+  font-weight: 500;
+}
+
+ul,
+ol {
+  padding: 0;
+}
+
+p {
+  margin: 0 0 30px;
+}
+
+hr {
+  border-bottom: 0;
+  border-left: 0;
+  border-right: 0;
+  border-top: 1px dashed #3c3f45;
+  margin: 50px 0;
+}
+
+.align-left {
+  float: left;
+  margin: 0 25px 0 0 !important;
+}
+
+.align-right {
+  float: right;
+  margin: 0 0 0 25px !important;
+}
+
+.text-align-left {
+  text-align: left;
+}
+
+.text-align-center {
+  text-align: center;
+}
+
+.text-align-right {
+  text-align: right;
+}
+
+.color-text {
+  color: #de5e60;
+}
+
+.through {
+  text-decoration: line-through;
+}
+
+input,
+button,
+select,
+textarea {
+  font-family: 'Titillium Web', sans-serif;
+  font-weight: 300;
+  outline: 0;
+}
+
+input:focus,
+textarea:focus,
+input[type="text"]:focus {
+  outline: 0;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #7f8289;
+}
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  color: #7f8289;
+}
+
+.herodeshi {
+  padding: 0 20px;
+}
+
+.full-width {
+  box-sizing: border-box;
+  margin: 0 -20px;
+  width: calc(100% + 40px);
+}
+
+.fade {
+  opacity: 0;
+  transition: opacity .15s linear;
+
+  &.in {
+    opacity: 1;
+  }
+}

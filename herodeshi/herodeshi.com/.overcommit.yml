@@ -1,0 +1,21 @@
+PreCommit:
+  ALL:
+    on_warn: fail
+    include: 'app/**/*'
+    exclude:
+      - '*'
+      - '.*'
+      - 'bower_components/**/*'
+      - 'node_modules/**/*'
+
+  CssLint:
+    enabled: false
+  HardTabs:
+    exclude:
+      - '**/*.svg'
+  ScssLint:
+    enabled: true
+    include: 'app/styles/**/*.scss'
+  TrailingWhitespace:
+    exclude:
+      - '**/*.svg'

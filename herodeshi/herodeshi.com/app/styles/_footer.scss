@@ -1,0 +1,16 @@
+footer {
+  background: #26292e;
+  height: auto;
+  position: relative;
+  text-align: center;
+  width: 100%;
+  z-index: 99;
+
+  .credits {
+    color: #fff;
+    font-size: 13px;
+    margin-bottom: 0;
+    padding: 20px 0;
+    text-transform: uppercase;
+  }
+}

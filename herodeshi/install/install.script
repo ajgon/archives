@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+
+if [ "$(id -u)" != 0 ]; then
+  echo "This script is meant to be run as root user on vanilla debian/ubuntu machine. See http://heroku-hook.readthedocs.org/en/latest/quickstart.html for more details."
+  exit 1
+fi
+
+HERODESHI_OUTPUT_LOG=/tmp/herodeshi-install.out.log
+HERODESHI_ERROR_LOG=/tmp/herodeshi-install.err.log
+echo -n > $HERODESHI_OUTPUT_LOG
+echo -n > $HERODESHI_ERROR_LOG
+
+echo -n " 1. Updating package repositories... "
+apt-get update >> $HERODESHI_OUTPUT_LOG 2>> $HERODESHI_ERROR_LOG
+echo "done."
+
+echo -n " 2. Installing necessary packages... "
+cat << EOF | debconf-set-selections
+gitolite3 gitolite3/adminkey string ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDdN6n46XlBPrBKHbexHZF8I+ZwRGX/NyN4tEKaCgSGK6Op6epG7l7QynETbImYvLBh/efqW6/I0OzTPOF5Ft0QmgxX5fNc1CDU4SXa6xx+xSeGjxWhVMF0zsBaBXE9RZm/azBngn2IPIiafAFYxpRburN3p7CqQnbBiIOHEz2A2qpSS+6B8EXDlJEkpCwLy+sEeCM8Z3DiKZx1v6l0gRXUcxHYG2TFRxwixq5/nbzDrl+dWqbrTG85IZRL+Y94b34LoKjhnbnyECY2o0zR2Igi/rJ+E8fzPfgZQw2nuYZoNGnTeswN8cVUJwJ9NbmVDsuzHr3Te5Mts9QSYBIGwRed
+gitolite3 gitolite3/gitdir string /var/lib/gitolite3
+gitolite3 gitolite3/gituser string git
+EOF
+DEBIAN_FRONTEND=noninteractive apt-get install -y --force-yes autoconf bind9-host bison build-essential coreutils curl daemontools debconf-utils dnsutils ed git gitolite3 imagemagick iputils-tracepath language-pack-en libbz2-dev libcurl4-openssl-dev libevent-dev libglib2.0-dev libjpeg-dev libmagickwand-dev libmysqlclient-dev libncurses5-dev libpq-dev libpq5 libreadline6-dev libsqlite3-dev libssl0.9.8 libssl-dev libxml2-dev libxslt-dev netcat-openbsd nginx openssh-client openssh-server postgresql-server-dev-all python python-dev ruby ruby-dev socat supervisor syslinux tar telnet zip zlib1g-dev>> $HERODESHI_OUTPUT_LOG 2>> $HERODESHI_ERROR_LOG
+echo "done."
+
+echo -n " 3. Setting up gitolite... "
+sed -i'' "0,/ *# LOCAL_CODE/s@ *# LOCAL_CODE@        LOCAL_CODE                =>  \"\$ENV\{HOME\}/local\",\n        # LOCAL_CODE@" ~git/.gitolite.rc >> $HERODESHI_OUTPUT_LOG 2>> $HERODESHI_ERROR_LOG
+mkdir -p ~git/local/hooks/common >> $HERODESHI_OUTPUT_LOG 2>> $HERODESHI_ERROR_LOG
+cat << EOF > ~git/local/hooks/common/post-receive
+#!/usr/bin/env bash
+if [ \${GL_REPO} = 'gitolite-admin' ]; then
+  exit 0
+fi
+
+heroku-hook
+EOF
+chmod +x ~git/local/hooks/common/post-receive >> $HERODESHI_OUTPUT_LOG 2>> $HERODESHI_ERROR_LOG
+chown git:git ~git/local
+su -l -c 'gitolite setup' git >> $HERODESHI_OUTPUT_LOG 2>> $HERODESHI_ERROR_LOG
+echo "git     ALL=NOPASSWD: /usr/bin/supervisorctl" >> /etc/sudoers
+echo "done."
+
+echo -n " 4. Setting up nginx... "
+{
+  mkdir -p /etc/nginx/apps/ssl
+  sed -i'' -E '0,/http\s*\{/s@http\s*\{@http \{\n        include /etc/nginx/apps/*.conf;\n@' /etc/nginx/nginx.conf
+  chown -R git:git /etc/nginx/apps
+} >> $HERODESHI_OUTPUT_LOG 2>> $HERODESHI_ERROR_LOG
+
+echo "done."
+
+echo -n " 5. Setting up supervisord... "
+chown -R git:git /etc/supervisor/conf.d/
+echo "done."
+
+echo -n " 6. Downloading and preparing buildpacks... "
+{
+  mkdir -p /opt/buildpacks
+  for buildpack in ruby nodejs clojure python java gradle grails scala play php; do git clone https://github.com/herodeshi/heroku-buildpack-${buildpack}.git /opt/buildpacks/heroku-buildpack-${buildpack}; done
+  chown -R git:git /opt/buildpacks
+} >> $HERODESHI_OUTPUT_LOG 2>> $HERODESHI_ERROR_LOG
+echo "done."
+
+echo -n " 7. Installing herodeshi hook... "
+mkdir -p /opt/apps /var/run/ports /var/log/apps >> $HERODESHI_OUTPUT_LOG 2>> $HERODESHI_ERROR_LOG
+gem install heroku-hook --no-ri --no-rdoc >> $HERODESHI_OUTPUT_LOG 2>> $HERODESHI_ERROR_LOG
+
+cat << EOF >> /etc/heroku-hook.yml
+project:
+  base_domain: $(curl -s -L http://canihazip.com/s/).xip.io
+EOF
+
+chown -R git:git /opt/apps /var/run/ports /var/log/apps >> $HERODESHI_OUTPUT_LOG 2>> $HERODESHI_ERROR_LOG
+echo "done."
+echo "Logs of the installation are available in ${HERODESHI_OUTPUT_LOG} and ${HERODESHI_ERROR_LOG}"
+echo "Have fun!"

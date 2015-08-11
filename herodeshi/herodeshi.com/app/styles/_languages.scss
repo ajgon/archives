@@ -1,0 +1,20 @@
+.languages {
+  display: flex;
+  list-style: none;
+
+  li {
+    margin-left: 4%;
+    width: 10%;
+
+    svg path {
+      fill: #7f8289;
+    }
+
+    &.more {
+      align-items: center;
+      display: flex;
+      font-size: 32px;
+      width: 24%;
+    }
+  }
+}

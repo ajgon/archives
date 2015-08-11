@@ -1,0 +1,22 @@
+.terminal {
+  border-radius: 5px;
+  height: 434px;
+  margin: 0 auto;
+  margin-top: 20px;
+  overflow: hidden;
+  width: 870px;
+
+  .terminal-bar {
+    background: linear-gradient(to bottom, #ebebeb 0%, #d4d4d4 100%);
+    color: #777;
+    display: block;
+    font-size: 14px;
+    height: 21px;
+    line-height: 21px;
+    position: relative;
+  }
+
+  .asciicast {
+    margin: 0 !important;
+  }
+}

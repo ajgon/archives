@@ -1,0 +1,9 @@
+{
+  "name": "herodeshi-com",
+  "private": true,
+  "dependencies": {
+    "modernizr": "~2.8.1",
+    "jquery": "~2.1.3",
+    "normalize-scss": "~3.0.2"
+  }
+}
