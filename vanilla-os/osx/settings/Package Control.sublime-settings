@@ -1,0 +1,17 @@
+{
+    "installed_packages":
+    [
+        "AdvancedNewFile",
+        "ApplySyntax",
+        "BracketHighlighter",
+        "EditorConfig",
+        "Material Theme",
+        "Package Control",
+        "SCSS",
+        "Seti_UI",
+        "Seti_UX",
+        "SublimeCodeIntel",
+        "SublimeLinter",
+        "Twig"
+    ]
+}

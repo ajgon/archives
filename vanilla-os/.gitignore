@@ -1,0 +1,3 @@
+**/.step*
+**/packages/*
+!**/packages/.gitkeep

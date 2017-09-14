@@ -1,0 +1,39 @@
+# Taps
+tap 'homebrew/dupes'
+tap 'homebrew/versions'
+tap 'homebrew/homebrew-php'
+
+# System tools
+brew 'ack'
+brew 'android-platform-tools'
+brew 'git'
+brew 'gpg'
+brew 'midnight-commander'
+brew 'nmap'
+brew 'pwgen'
+brew 'reattach-to-user-namespace'
+brew 'tmux'
+brew 'vim', args: ['override-system-vi']
+brew 'wget', args: ['enable-iri']
+
+# Dev tools
+brew 'imagemagick'
+brew 'memcached'
+brew 'mysql'
+brew 'postgresql'
+brew 'redis'
+
+# Dev linters
+brew 'shellcheck'
+brew 'advancecomp'
+brew 'gifsicle'
+brew 'jhead'
+brew 'jpegoptim'
+brew 'jpeg'
+brew 'optipng'
+brew 'pngcrush'
+brew 'pngquant'
+
+# PHP
+brew 'php56'
+brew 'composer'
