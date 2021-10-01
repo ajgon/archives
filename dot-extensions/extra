@@ -1,0 +1,19 @@
+# Fix CTRL-Q and CTRL-S in terminal
+stty -ixon > /dev/null 2>&1
+
+# Add pseudo-support for XDG_CONFIG_HOME for ssh
+if [ -s "${XDG_CONFIG_HOME}/ssh/config" ]
+then
+    SSH_CONFIG="-F ${XDG_CONFIG_HOME}/ssh/config"
+fi
+if [ -s "${XDG_CONFIG_HOME}/ssh/id_rsa" ]
+then
+    SSH_ID="-i ${XDG_CONFIG_HOME}/ssh/id_rsa"
+fi
+
+# Fix GPG
+export GPG_TTY=$(tty)
+
+alias ssh="ssh $SSH_CONFIG $SSH_ID "
+alias scp="scp $SSH_CONFIG $SSH_ID "
+alias ssh-copy-id="ssh-copy-id $SSH_ID"

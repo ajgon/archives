@@ -1,0 +1,69 @@
+# Colors (Tomorrow Night Eighties)
+colors:
+  # Default colors
+  primary:
+    background: '#2c2c2c'
+    foreground: '#cccccc'
+
+  # Colors the cursor will use if `custom_cursor_colors` is true
+  cursor:
+    text: '#cccccc'
+    cursor: '#505050'
+
+  # Normal colors
+  normal:
+    black:   '#000000'
+    red:     '#f17779'
+    green:   '#99cc99'
+    yellow:  '#ffcc66'
+    blue:    '#6699cc'
+    magenta: '#cc99cc'
+    cyan:    '#66cccc'
+    white:   '#fffefe'
+
+  # Bright colors
+  bright:
+    black:   '#000000'
+    red:     '#f17779'
+    green:   '#99cc99'
+    yellow:  '#ffcc66'
+    blue:    '#6699cc'
+    magenta: '#cc99cc'
+    cyan:    '#66cccc'
+    white:   '#fffefe'
+
+# Font configuration (changes require restart)
+font:
+  # The size to use.
+  size: 12
+  # The normal (roman) font face to use.
+  normal:
+    family: JetBrains Mono
+    # Style can be specified to pick a specific face.
+    style: Regular
+
+  # The bold font face
+  bold:
+    family: JetBrains Mono
+    # Style can be specified to pick a specific face.
+    style: Bold
+
+  # The italic font face
+  italic:
+    family: JetBrains Mono
+    # Style can be specified to pick a specific face.
+    style: Italic
+
+env:
+  LC_ALL: en_US.UTF-8
+
+background_opacity: 0.7
+shell:
+  program: /bin/zsh
+  args:
+    - -c
+    - "tmux -f ${XDG_CONFIG_HOME}/tmux/tmux.conf attach -t init || tmux -f ${XDG_CONFIG_HOME}/tmux/tmux.conf new -s init"
+
+mouse:
+  url:
+    modifiers: Super

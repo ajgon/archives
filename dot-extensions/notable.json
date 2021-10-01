@@ -1,0 +1,27 @@
+{
+	"autoupdate": false,
+	"monaco": {
+		"editorOptions": {
+			"minimap": {
+				"enabled": false
+			},
+			"lineNumbers": "off",
+			"scrollBeyondLastLine": false,
+			"wordWrap": "bounded"
+		}
+	},
+	"sorting": {
+		"by": "title",
+		"type": "ascending"
+	},
+	"theme": "dark",
+	"tutorial": false,
+	"cwd": "/Users/ajgon/Nextcloud/notable",
+	"telemetry": false,
+	"Options": {
+		"editor": {
+			"lineNumbers": "off",
+			"wordWrap": "bounded"
+		}
+	}
+}

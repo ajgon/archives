@@ -1,0 +1,8 @@
+{
+    "solargraph.useBundler": true,
+    "solargraph.diagnostics": true,
+    "solargraph.completion": true,
+    "solargraph.hover": true,
+    "solargraph.formatting": true,
+    "solargraph.definitions": true
+}

@@ -1,0 +1,4 @@
+# when you explictly change config, then force add it despite this ignore
+# however under norma circumstances - keep it ignored, as it gets modified dynamically by
+# ellipsis install script
+config

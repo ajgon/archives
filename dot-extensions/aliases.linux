@@ -1,0 +1,3 @@
+# Update python, ruby and vim packages
+alias update='pip3-upgrade; rvm get stable; vim +PlugUpgrade +PlugUpdate +qall'
+

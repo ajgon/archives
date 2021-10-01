@@ -1,0 +1,11 @@
+function pbcopy() {
+  if which xclip > /dev/null; then
+    xclip -selection clipboard
+  fi
+}
+
+function pbpaste() {
+  if which xclip > /dev/null; then
+    xclip -selection clipboard -o
+  fi
+}

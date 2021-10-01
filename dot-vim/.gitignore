@@ -1,0 +1,6 @@
+localhistory
+bundle
+sessions
+autoload/plug.vim.old
+coc/*
+!coc/coc-settings.json

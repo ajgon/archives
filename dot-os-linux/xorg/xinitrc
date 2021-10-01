@@ -1,0 +1,2 @@
+[[ -f $XDG_CONFIG_HOME/xorg/Xresources ]] && xrdb -merge $XDG_CONFIG_HOME/xorg/Xresources
+startfluxbox
