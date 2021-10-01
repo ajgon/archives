@@ -1,0 +1,33 @@
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.main-container {
+  flex: 1 0 auto;
+  justify-content: center;
+  padding-top: 50px;
+}
+
+.preloader-container {
+  flex: 1 0 auto;
+  justify-content: center;
+  padding-top: 50px;
+}
+
+.page-footer {
+  padding-top: 0;
+}
+
+.btn-floating.halfway-fab.data-previous {
+  left: 74px;
+}
+
+.btn-floating.halfway-fab.data-next {
+  left: 124px;
+}
+
+.btn-floating.halfway-fab.data-last {
+  left: 174px;
+}
